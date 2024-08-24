@@ -1,0 +1,198 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins";
+    
+}
+
+
+.primary {
+    color: #6a0bff;
+}
+
+.main-back {
+    background: #000;
+    width: 100%;
+    height: 80vh;
+    /* Changed from min-height to full height of the viewport */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    overflow: hidden;
+}
+.chat-container-ai::-webkit-scrollbar {
+    display: none;
+}
+
+/* Optional: hide scrollbar for other browsers */
+.chat-container-ai{
+    -ms-overflow-style: none;
+    /* Internet Explorer and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+
+.intro-text {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.chat-container-ai {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-top: 20px;
+    max-height: 80vh;
+    /* Ensures the chat container remains within the full screen */
+    padding-bottom: 20px;
+    /* Adds padding at the bottom to make room for the input field */
+}
+
+.chat-bubble {
+    background: #333;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    max-width: 60%;
+    color: #fff;
+    font-size: 14px;
+}
+
+.chat-bubble.user {
+    align-self: flex-end;
+    background: #6a0bff;
+}
+
+.chat-bubble.bot {
+    align-self: flex-start;
+    background: #444;
+}
+
+.roundpill {
+    border-radius: 40px;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.roundpill:hover {
+    transform: translateY(-10px) scale(1.05);
+    color: #000000;
+    z-index: 0;
+}
+
+.dot {
+    width: 5px;
+    height: 5px;
+    background: transparent;
+    position: absolute;
+    transition: 1s cubic-bezier(0.215, 0.610, 0.355, 1) all;
+    border-radius: 50%;
+}
+
+.roundpill:hover .dot {
+    transform: scale(100);
+    background: #f5f5f5;
+}
+
+.roundpill:hover .prompt {
+    position: absolute;
+    z-index: 5;
+    color: #000;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0 0 5px 0; 
+    background:transparent;
+    bottom: 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.input-prompt {
+    flex-grow: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 40px;
+    background: #333;
+    color: #bebebe;
+    caret-color: #6a0bff;
+    transition: background 0.3s ease;
+    transition: height 0.3s ease;
+}
+
+.input-prompt:focus {
+    outline: none;
+    background: #444;
+}
+
+.send-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 40px;
+    background: #6a0bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(106, 11, 255, 0.5);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.send-button:hover {
+    background: #4a08b5;
+    box-shadow: 0 6px 20px rgba(106, 11, 255, 0.7);
+}
+
+.expanded-input {
+    padding: 15px 30px;
+    height: 60px;
+    background: #1c1c1c;
+}
+
+.card-ai {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-title {
+    font-size: 50px;
+}
+
+@media (max-width: 576px) {
+    .chat-title {
+        font-size: 30px;
+    }
+}
+
+.modal-content {
+    position: relative;
+    background: black;
+    width: 60vw;
+    height: 85vh;
+    /* Make the modal content full height */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+    .modal-content {
+        width: 70vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 97vw;
+    }
+}

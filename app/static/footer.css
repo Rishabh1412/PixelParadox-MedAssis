@@ -1,0 +1,65 @@
+.content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(45deg, #a8ff78, #78ffd6); /* Your green gradient */
+}
+
+.wavy-footer {
+    position: relative;
+    width: 100%;
+    background: #1a1a1a; /* Dark background */
+    color: #f0f0f0; /* Off-white text */
+    text-align: center;
+    padding: 40px 20px;
+    overflow: hidden;
+}
+
+.footer-content {
+    position: relative;
+    z-index: 1;
+}
+
+.wave {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="%231a1a1a" fill-opacity="1" d="M0,256L30,234.7C60,213,120,171,180,160C240,149,300,171,360,160C420,149,480,107,540,90.7C600,75,660,85,720,112C780,139,840,181,900,181.3C960,181,1020,139,1080,122.7C1140,107,1200,117,1260,128C1320,139,1380,149,1410,154.7L1440,160L1440,320L1410,320C1380,320,1320,320,1260,320C1200,320,1140,320,1080,320C1020,320,960,320,900,320C840,320,780,320,720,320C660,320,600,320,540,320C480,320,420,320,360,320C300,320,240,320,180,320C120,320,60,320,30,320L0,320Z"></path></svg>') repeat-x;
+    animation: wave 10s linear infinite;
+    z-index: 0;
+}
+
+#wave1 {
+    bottom: 0;
+    opacity: 0.7;
+    animation-delay: 0s;
+}
+
+#wave2 {
+    bottom: 10px;
+    opacity: 0.5;
+    animation-delay: -5s;
+}
+
+#wave3 {
+    bottom: 15px;
+    opacity: 0.3;
+    animation-delay: -2.5s;
+}
+
+#wave4 {
+    bottom: 20px;
+    opacity: 0.2;
+    animation-delay: -7.5s;
+}
+
+@keyframes wave {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}

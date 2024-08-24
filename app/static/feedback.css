@@ -1,0 +1,37 @@
+.emoji-group{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.emojis{
+    background:  #f5f5f5;
+    transition: 300ms all cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.emojis:hover{
+    background: #ebfadb;
+}
+.emojis:active{
+    background: #b3eda9;
+    border: 2px solid #009a6e;
+}
+.btn-emoji{
+    background: #009a6e;
+    color: #f5f5f5;
+    transition: 300ms all cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.btn-emoji:hover{
+    border:1px solid #007050;
+}
+.btn-emoji:hover .rate-text{
+    color: #009a6e;
+}
+.btn-emoji:active {
+    background: #007050;
+}
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+.modal.fade.show {
+    z-index: 1050 !important;
+}

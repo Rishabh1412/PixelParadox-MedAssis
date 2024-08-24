@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medassis | Otp</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <link href="../static/dashboard.css" rel="stylesheet" />
+    <link rel="icon" href="../static/assests/Logo.jpg" type="image/x-icon">
+
+    <style>
+        body {
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #010101;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: #cccccc;
+            border-radius: 12px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background-color: #565555;
+            /* Darker gray color of the scrollbar thumb on hover */
+        }
+
+        :root {
+            --color-blue: #1a2ffb;
+            --color-orange: #ff5733;
+            --color-green: #39ff14;
+            --green-dark: #228b22;
+            --color-pink: #ff00ff;
+            --color-cyan: #00ffff;
+            --color-blue2: #0000ff;
+            --color-yellow: #ffff00;
+            --color-purple: #ff2a91;
+        }
+
+        /* From Uiverse.io by Yaya12085 */
+        .form {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 350px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: black
+        }
+
+        .message {
+            color: #a3a3a3;
+            font-size: 14px;
+            margin-top: 4px;
+            text-align: center
+        }
+
+        .inputs {
+            margin-top: 10px
+        }
+
+        .inputs .input-otp {
+            width: 32px;
+            height: 32px;
+            text-align: center;
+            border: none;
+            border-bottom: 1.5px solid #d2d2d2;
+            margin: 0 5px;
+        }
+
+        .inputs .input-otp:focus {
+            border-bottom: 1.5px solid royalblue;
+            outline: none;
+        }
+
+        .action {
+            margin-top: 24px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: none;
+            background-color: royalblue;
+            color: white;
+            cursor: pointer;
+            align-self: end;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="../static/sign-in-up.css" />
+</head>
+
+<body class="bg-light px-3 px-md-0">
+    <div class="p-3 p-md-5 bg-white form-base shadow">
+
+
+
+
+
+
+
+
+        <form class="form" method="POST">
+            {{ otpform.hidden_tag() }}
+            <div class="title">OTP</div>
+            <div class="title">Verification Code</div>
+            <p class="message">We have sent a verification code to your email address</p>
+            <div class="inputs">
+                {{ otpform.otp1(class='input-otp') }}
+                {{ otpform.otp2(class='input-otp') }}
+                {{ otpform.otp3(class='input-otp') }}
+                {{ otpform.otp4(class='input-otp') }}
+                {{ otpform.otp5(class='input-otp') }}
+                {{ otpform.otp6(class='input-otp') }}
+
+            </div>
+            {{ otpform.submit(class="action") }}
+        </form>
+
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // Get all input fields
+        const inputs = document.querySelectorAll('.inputs input');
+
+        // Loop through each input field
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', function () {
+                // If the current input has a value, move to the next one
+                if (input.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', function (e) {
+                // Allow users to use the backspace key to move to the previous input
+                if (e.key === "Backspace" && index > 0 && input.value.length === 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+    </script>
+
+</body>
+
+
+</html>

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Medassis | Community Support{% endblock %}
+{% block content %}
+{% include "feedback.html" %}
+<div style="color:darkgrey; height:100vh; border-radius:0">
+  <div class="chat-container" id="chat-container-user">
+    <div class="chat-header">
+      <div class="header-left">
+        <div class="avatar">
+          <i class="fa-solid fa-user-group"></i>
+        </div>
+        <div class="user-info">
+          <i class="fa-solid fa-bars d-lg-none me-2 d-flex position-fixed menu-button shadow"
+            onclick="togglesidebar()"></i>
+          <h4 class="ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold position-relative">Community</h4>
+          <p></p>
+        </div>
+      </div>
+    </div>
+    <div class="chat-window" id="chat-window-user" data-username="{{ user_data }}">
+  
+
+      <!-- Messages will appear here -->
+    </div>
+    <div class="input-area">
+      <input type="text" id="chat-input-user" placeholder="Type a message...">
+      <button id="send-button-user"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+{% endblock %}

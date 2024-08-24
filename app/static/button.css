@@ -1,0 +1,82 @@
+#home-reel-cta {
+    display: flex;
+    position: relative;
+    float: left;
+    overflow: hidden;
+    padding: 1em 1.5em 1em 1.625em;
+    align-items: center;
+    gap: 1em;
+    border-radius: 5.3125em;
+    background: #fff;
+    font-family: 'Ubuntu';
+    text-transform: uppercase;
+    width: fit-content;
+    height: 3.375em;
+    font-weight: 500;
+    pointer-events: auto;
+    color: var(--project-details-btn-text);
+    grid-column: 7 / span 6;
+    margin-top: 3em;
+    opacity: 0;
+    box-shadow: 0 6px 10px #0000000a, 0 2px 4px #0000000a;
+    transition: background cubic-bezier(.35,0,0,1) .2s;
+    will-change: transform;
+    text-decoration: none;
+    
+    
+
+}
+#home-reel-cta-dot {
+    display: inline-block;
+    position: relative;
+    width: .5em;
+    height: .5em;
+    background: var(--color-black);
+    border-radius: 100px;
+    z-index: 1;
+    background: black;
+    transition: background cubic-bezier(.35,0,0,1) .5s, transform cubic-bezier(.35,0,0,1) .4s;
+}
+#home-reel-cta-text {
+    position: relative;
+    z-index: 1;
+    transition: color cubic-bezier(.35,0,0,1) .5s, transform cubic-bezier(.35,0,0,1) .4s;
+}
+#home-reel-cta-arrow {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 1em;
+    height: 1.2em;
+    width: 1.2em;
+    color: var(--color-blue);
+    border-radius: 100%;
+    transform: translate3d(3em, 0, 0);
+    transition: transform cubic-bezier(.4,0,0,1) .4s;
+    z-index: 1;
+}
+@media (hover: hover) {
+    #home-reel-cta:hover {
+        color: var(--color-white);
+        background: var(--color-blue);
+        transition: background cubic-bezier(.35,0,0,1) .5s .3s;
+    }
+}
+@media (hover: hover) {
+    #home-reel-cta:hover #home-reel-cta-dot {
+        transform: translate3d(3em, 0, 0) scale(24);
+        background: var(--color-blue);
+    }
+}
+@media (hover: hover) {
+    #home-reel-cta:hover #home-reel-cta-text {
+        transform: translate3d(-1.5em, 0, 0);
+        color: #fff;
+    }
+}
+@media (hover: hover) {
+    #home-reel-cta:hover #home-reel-cta-arrow {
+        transform: translateZ(0);
+    }
+}

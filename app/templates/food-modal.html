@@ -1,0 +1,53 @@
+<div class="modal fade" style="max-height: 90vh;" id="food-modal" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content new-baseai">
+            <div class="modal-header shadow" style="background: #56e1e9;">
+                <h1 class="modal-title fs-5" id="newBackdropLabel" style="color:#050505; border:0">DietAssis</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 m-0">
+                <div class="new-main-back rounded p-md-5 p-3 d-flex flex-column">
+                    <div id="new-intro-text" class="new-intro-text">
+                        <h5 class="fw-bold text-dark-subtle new-chat-title" style="line-height: 0.8;">Hello,
+                            <span class="new-primary">{{ ME }}</span><br />I am here to
+                            <span class="new-primary">advise</span>
+                            and <span class="new-primary">help you.</span>
+                        </h5>
+                    </div>
+
+                    <div class="new-chat-container-ai d-flex flex-column" id="new-chat-container-ai"></div>
+
+                    <!-- Input Container -->
+                    <div class="new-input-container pt-2 mb-3 mb-md-0 d-flex align-items-center" id="new-input-container">
+                        <input class="px-3 px-md-4 py-3 rounded-pill new-input-prompt shadow me-2" id="disease-input"
+                            name="disease-input" placeholder="Enter Disease..." type="text"
+                            style="flex: 1.5; transition:all 200ms linear;" />
+
+                        <select class="form-select rounded-pill px-3 px-md-4 fs-6 py-3 shadow me-2"
+                            id="input-type-select" name="input-type" style="flex: 1; transition:all 200ms linear;">
+                            <option value="text">Text</option>
+                            <option value="image">Image</option>
+                        </select>
+
+                        <input class="px-3 px-md-4 py-3 rounded-pill new-input-prompt shadow me-2" id="new-user-prompt"
+                            name="message-input-to-new-bot" placeholder="Type your message..." type="text"
+                            style="flex: 2; transition:all 200ms linear;" />
+
+                        <input class="form-control py-3 rounded-pill new-input-prompt shadow me-2" type="file"
+                            id="image-input" name="image-input" accept="image/*"
+                            style="flex: 3; display: none; transition:all 200ms linear;" />
+
+                        <button id="new-send-button-ai" class="new-send-button-ai rounded-pill px-2 px-md-4 py-3"
+                            type="submit" style="flex: 0.5;">
+                            <span id="send-button-text"><i class="fa-solid fa-paper-plane"></i></span>
+                            <span id="loading-spinner" class="spinner-border spinner-border-sm" role="status"
+                                aria-hidden="true" style="display: none;"></span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block title %}Medassis | Diet Chart{% endblock %} {% block
+    content %}
+    {% include "feedback.html" %}
+    <div style="height:100vh; overflow-y: auto; position: relative;">
+        <div class="px-4 pt-3 pt-md-4 position-relative d-flex justify-content-between align-items-center mobhead">
+            <!-- <div class="d-flex justify-content-between postion-fixed pt-5 pt-md-0"> -->
+    
+            <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">Diet Chart Maker</h4>
+    
+    
+            <i class="fa-solid fa-bars d-md-none me-2 d-flex position-fixed menu-button shadow"
+                onclick="togglesidebar()"></i>
+        </div>
+        <div class="bg-light d-flex justify-content-center align-items-flex-end w-100 pb-3 mx-3 shadow rounded"
+            style="overflow-y: auto">
+            <div class="bg-white shadow p-5 rounded">
+                {{ response|safe }}
+            </div>
+        </div>
+    </div>
+    
+    {% endblock %}
