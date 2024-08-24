@@ -1,0 +1,168 @@
+{% extends 'formbase.html' %} {% block formtitle %}Medassis | Kidney Checkup Form{% endblock %}
+{% block formcontent %}
+<div class="position-relative">
+    <a href="{{ url_for('dashboard') }}"><button class="position-absolute m-3 ms-4 p-4 border-0 rounded-circle fs-5 shadow" style="
+        width :30px;
+        height: 30px;
+        background :var(--green-dark);
+        color: #fff;
+        display :flex;
+        justify-content: center;
+        align-items :center;
+      ">
+            <i class="fa-solid fa-arrow-left"></i></button></a>
+    <div class="w-100 justify-content-center d-flex pt-4">
+        <h2 style="text-decoration: underline">Kidney form</h2>
+    </div>
+    <form method="POST" class="px-5 pe-3 py-3 row ">
+
+        {{ kidneyform.hidden_tag() }}
+        <h4 class="text-decoration-underline">Personal Information</h4>
+        <div class="mb-3 col-12 ">
+            <span>{{ kidneyform.username.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.username(class="border bg-body-secondary rounded py-2 px-3 w-100 w-md-75") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.gender.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.gender(class="border-0 d-flex w-100 justify-content-evenly ms-3 py-2 px-0 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.age.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.age(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+        <h4 class=" mt-2 text-decoration-underline">Medical Information</h4>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.height.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.height(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.weight.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.weight(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-12 ">
+            <span>{{ kidneyform.smoke_alco.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.smoke_alco(class="border-0 d-flex w-100 justify-content-evenly py-2 px-0 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.physical_activity.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.physical_activity(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.kidney_diet_score.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.kidney_diet_score(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.fhkd.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.fhkd(class="border-0 d-flex w-100 justify-content-evenly py-2 px-0 w-100") }}
+        </div>
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.fhh.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.fhh(class="border-0 d-flex w-100 justify-content-evenly py-2 px-0 w-100") }}
+        </div>
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.fhd.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.fhd(class="border-0 d-flex w-100 justify-content-evenly py-2 px-0 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.urinary_tract.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.urinary_tract(class="border-0 d-flex w-100 justify-content-evenly py-2 px-0 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.systoyic_bp.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.systoyic_bp(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.diastotic_bp.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.diastotic_bp(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.fasting_blood_sugar.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.fasting_blood_sugar(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.hba1clvl.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.hba1clvl(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.serum_creative.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.serum_creative(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.bunlvl.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.bunlvl(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.gfr.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.gfr(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.protein_in_urine.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.protein_in_urine(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.serum_electrolyes_sodium.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.serum_electrolyes_sodium(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.serum_electrolyes_potassium.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.serum_electrolyes_potassium(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.haemoglobin_lvl.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.haemoglobin_lvl(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.cholestrol_lvl.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.cholestrol_lvl(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.diuretics.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.diuretics(class="border-0 d-flex w-100 justify-content-evenly py-2 px-0 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.edema.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.edema(class="border-0 d-flex w-100 justify-content-evenly py-2 px-0 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.muscle.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.muscle(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-6">
+            <span>{{ kidneyform.itching.label(class="fw-semibold text-dark") }}</span><br />
+            {{ kidneyform.itching(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+
+        <div class="mb-3 col-12">
+            {{ kidneyform.submit(class="border-0 btn rounded-pill fw-bold py-3 px-4 btn btn-success submit-button") }}
+        </div>
+    </form>
+
+
+
+</div>
+{% endblock %}
