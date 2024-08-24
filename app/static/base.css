@@ -1,0 +1,153 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background-color: #f0f3f4;
+  display: flex;
+  /* float: left; */
+}
+
+.my-sidebar {
+  width: 340px;
+  height: 100vh;
+  background: linear-gradient(#1b3d38, #1b3d38, #2b6056, #1b3d38, #1b3d38);
+  color: #c9c9cf;
+  padding: 20px;
+  box-sizing: border-box;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  z-index: 2;
+}
+@media (max-width: 576px) {
+  .my-sidebar {
+    display: none;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 20px 5px 5px;
+  color: #b8c1c2;
+  font-size: 16px;
+  transition: background 0.3s ease;
+  cursor: pointer;
+  margin-bottom: 7px;
+  border-radius: 40px;
+}
+
+.nav-icon {
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff12;
+  border-radius: 50%;
+}
+
+.nav-item.active,
+.nav-item:hover {
+  background-color: #294e47;
+  color: #fff;
+}
+
+.user-account {
+  display: flex;
+  align-items: center;
+  color: #b8c1c2;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  font-size: larger;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #c9c9cf2b;
+}
+.knowmore {
+  background-color: #fff;
+  margin-left: 5px;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  font-size: larger;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #1b3d38;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.user-id {
+  margin: 0;
+  font-size: 14px;
+  color: #8fa2a1;
+}
+
+main {
+  /* margin-left: 320px; Make room for the sidebar */
+  width: 100%;
+  height: 100vh;
+  background: #eaeaea;
+  /* padding: 20px; */
+  box-sizing: border-box;
+}
+@media (max-width: 1200px) {
+  .main {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 1220px) {
+  .mobhead {
+    background: #c9ffce;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding-bottom: 20px;
+    box-shadow: 5px 5px 5px #00000032;
+  }
+}
+@media (min-width: 1220px) {
+  .mobhead {
+    background: transparent;
+  }
+}

@@ -1,0 +1,19 @@
+#background-img{
+    background-image: url('../static/assests/healthcare-doodle-texture-vector-36566718.jpg');
+    background-size:contain;
+    background-position: center;
+    background-repeat: repeat;
+    z-index: 10;
+
+}
+.formbase{
+    height: 100vh;
+    width: 100%;
+}
+.sumbit-button{
+    background: #7df87d;
+}
+.sumbit-button:hover{
+    background: #5bb45b;
+    box-shadow: 5px 5px 5px #0000001a;
+}
