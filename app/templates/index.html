@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizations</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>3D Scatter Plot of Age, TB, and DB (Disease Cases Only)</h1>
+    <div id="scatter_plot"></div>
+
+    <h2>Histogram of Age Groups for People with Disease</h2>
+    <div id="histogram_plot"></div>
+
+    <h2>Surface Plot of A/G Ratio, Alkphos, and Age</h2>
+    <div id="surface_plot"></div>
+
+    <h2>Heatmap of Age, SGPT, and SGOT</h2>
+    <div id="heatmap_plot"></div>
+
+    <h2>Pie Charts</h2>
+    <h3>People with A/G Ratio > 2.5</h3>
+    <div id="ag_ratio_pie"></div>
+
+    <h3>Percent of Males and Females with Disease</h3>
+    <div id="gender_pie"></div>
+
+    <h3>Percent of People with Disease by Age Group</h3>
+    <div id="age_group_pie"></div>
+
+    <h3>People with TB > 0.9</h3>
+    <div id="tb_pie"></div>
+
+    <h3>People with DB > 0.7</h3>
+    <div id="db_pie"></div>
+
+    <h2>Clustering of Data</h2>
+    <div id="cluster_plot"></div>
+
+    <script>
+        var scatter_graphs = {{ scatter_graphJSON|safe }};
+        var histogram_graphs = {{ histogram_graphJSON|safe }};
+        var surface_graphs = {{ surface_graphJSON|safe }};
+        var heatmap_graphs = {{ heatmap_graphJSON|safe }};
+        var ag_ratio_pie = {{ ag_ratio_graphJSON|safe }};
+        var gender_pie = {{ gender_pie_graphJSON|safe }};
+        var age_group_pie = {{ age_group_graphJSON|safe }};
+        var tb_pie = {{ tb_graphJSON|safe }};
+        var db_pie = {{ db_graphJSON|safe }};
+        var cluster_plot = {{ cluster_graphJSON|safe }};
+        
+        Plotly.react('scatter_plot', scatter_graphs);
+        Plotly.react('histogram_plot', histogram_graphs);
+        Plotly.react('surface_plot', surface_graphs);
+        Plotly.react('heatmap_plot', heatmap_graphs);
+        Plotly.react('ag_ratio_pie', ag_ratio_pie);
+        Plotly.react('gender_pie', gender_pie);
+        Plotly.react('age_group_pie', age_group_pie);
+        Plotly.react('tb_pie', tb_pie);
+        Plotly.react('db_pie', db_pie);
+        Plotly.react('cluster_plot', cluster_plot);
+    </script>
+</body>
+</html>

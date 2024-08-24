@@ -13,6 +13,9 @@ import plotly.express as px
 import json
 import plotly
 import plotly.graph_objs as go
+from scipy.interpolate import griddata
+import time
+from sklearn.cluster import KMeans
 
 model = pickle.load(open('./app/static/model.pkl', 'rb'))
 scaler = pickle.load(open('./app/static/scaler.pkl', 'rb'))
@@ -689,7 +692,197 @@ def index():
                            pie_non_diabetes_smoking=pie_graphJSON_non_diabetes_smoking,
                            pie_non_diabetes_heart=pie_graphJSON_non_diabetes_heart)
 
+@app.route('/kidneyplot')
+def index7():
+    pio.templates.default = "plotly"
+    df = pd.read_csv('app/static/kidneyData.csv')
+    df_scatter = df.sample(n=250, random_state=42)
 
+    fig_scatter = px.scatter_3d(df_scatter, x='SystolicBP', y='DiastolicBP', z='FastingBloodSugar', color='AgeGroup',title="3D Scatter Plot of Systolic BP, Diastolic BP, and Blood Sugar Level")
+    fig_scatter.update_layout(height=500)
+
+    fig_hist = px.histogram(df, x='AgeGroup', color='Gender', barmode='group',title="Histogram of Age Group by Gender")
+    fig_hist.update_layout(width=500, height=500)
+
+    x = df['SystolicBP']
+    y = df['DiastolicBP']
+    z = df['FastingBloodSugar']
+
+    xi = np.linspace(x.min(), x.max(), 100)
+    yi = np.linspace(y.min(), y.max(), 100)
+    xi, yi = np.meshgrid(xi, yi)
+
+    zi = griddata((x, y), z, (xi, yi), method='linear')
+
+    fig_surface = go.Figure(data=[go.Surface(z=zi, x=xi, y=yi)])
+    fig_surface.update_layout(title='Surface Plot of Systolic BP, Diastolic BP, and Blood Sugar Level',scene=dict(xaxis_title='Systolic BP',yaxis_title='Diastolic BP',zaxis_title='Blood Sugar Level'),width=700, height=700)
+
+    fig_heatmap = px.density_heatmap(df, x='ProteinInUrine', y='SerumCreatinine',color_continuous_scale='Viridis',title='Heatmap of Protein in Urine vs Serum Creatinine Levels')
+    fig_heatmap.update_layout(width=700, height=700)
+
+    x_mesh = df['SystolicBP']
+    y_mesh = df['DiastolicBP']
+    z_mesh = df['HbA1c']
+
+    xi_mesh = np.linspace(x_mesh.min(), x_mesh.max(), 100)
+    yi_mesh = np.linspace(y_mesh.min(), y_mesh.max(), 100)
+    xi_mesh, yi_mesh = np.meshgrid(xi_mesh, yi_mesh)
+
+    zi_mesh = griddata((x_mesh, y_mesh), z_mesh, (xi_mesh, yi_mesh), method='linear')
+
+    fig_mesh = go.Figure(data=[go.Surface(z=zi_mesh, x=xi_mesh, y=yi_mesh)])
+    fig_mesh.update_layout(title='Mesh Plot of HbA1c, Systolic BP, and Diastolic BP',
+                           scene=dict(xaxis_title='Systolic BP',yaxis_title='Diastolic BP',zaxis_title='HbA1c'),width=700, height=700)
+
+    fig_live = px.scatter(df, x='CholesterolTotal', y='SerumCreatinine',
+                         title='Live Graph of Cholesterol Levels vs Serum Creatinine Levels')
+    fig_live.update_layout(width=700, height=700)
+
+    # pie charts
+    df_high_systolic = df[df['SystolicBP'] > 120]
+    pie_systolic = px.pie(df_high_systolic, names='Diagnosis', title='Percentage of People with Systolic BP Above 120',
+                         color='Diagnosis',color_discrete_map={0: 'blue', 1: 'red'})
+    pie_systolic.update_layout(width=600, height=400)
+
+    df_high_diastolic = df[df['DiastolicBP'] > 80]
+    pie_diastolic = px.pie(df_high_diastolic, names='Diagnosis', title='Percentage of People with Diastolic BP Above 80',
+                          color='Diagnosis',color_discrete_map={0: 'blue', 1: 'red'})
+    pie_diastolic.update_layout(width=600, height=400)
+
+    df_high_hba1c = df[(df['HbA1c'] > 5.7) & (df['Diagnosis'] == 1)]
+    pie_hba1c = px.pie(df_high_hba1c, names='Diagnosis', title='Percentage of People with High HbA1c and Diagnosis = Positive',
+                       color='Diagnosis',color_discrete_map={1: 'red'})
+    pie_hba1c.update_layout(width=600, height=400)
+
+    df_high_cholesterol = df[(df['CholesterolTotal'] > 150) & (df['Diagnosis'] == 1)]
+    pie_cholesterol = px.pie(df_high_cholesterol, names='Diagnosis', title='Percentage of People with High Cholesterol and Diagnosis = Positive',
+                             color='Diagnosis',color_discrete_map={1: 'red'})
+    pie_cholesterol.update_layout(width=600, height=400)
+
+    df_gender_diagnosis = df[df['Diagnosis'] == 1]
+    pie_gender = px.pie(df_gender_diagnosis, names='Gender', title='Percentage of People with Diagnosis = Positive by Gender',
+                        color='Gender',color_discrete_map={0: 'blue', 1: 'red'})
+    pie_gender.update_layout(width=600, height=400)
+
+    plot_scatter_html = pio.to_html(fig_scatter, full_html=False)
+
+    plot_hist_html = pio.to_html(fig_hist, full_html=False)
+
+    plot_surface_html = pio.to_html(fig_surface, full_html=False)
+
+    plot_heatmap_html = pio.to_html(fig_heatmap, full_html=False)
+
+    plot_mesh_html = pio.to_html(fig_mesh, full_html=False)
+
+    plot_live_html = pio.to_html(fig_live, full_html=False)
+    plot_pie_systolic_html = pio.to_html(pie_systolic, full_html=False)
+    plot_pie_diastolic_html = pio.to_html(pie_diastolic, full_html=False)
+    plot_pie_cholesterol_html = pio.to_html(pie_cholesterol, full_html=False)
+
+    plot_pie_hba1c_html = pio.to_html(pie_hba1c, full_html=False)
+    plot_pie_gender_html = pio.to_html(pie_gender, full_html=False)
+
+    return render_template('index0.html', 
+                           plot_scatter_html=plot_scatter_html, 
+                           plot_hist_html=plot_hist_html,
+                           plot_surface_html=plot_surface_html,
+                           plot_heatmap_html=plot_heatmap_html,
+                           plot_mesh_html=plot_mesh_html,
+                           plot_live_html=plot_live_html,
+                           plot_pie_systolic_html=plot_pie_systolic_html,
+                           plot_pie_diastolic_html=plot_pie_diastolic_html,
+                           plot_pie_cholesterol_html=plot_pie_cholesterol_html,
+                           plot_pie_hba1c_html=plot_pie_hba1c_html,
+                           plot_pie_gender_html=plot_pie_gender_html)
+
+@app.route('/live-data')
+def live_data():
+    df = pd.read_csv('app/static/kidneyData.csv')
+    df_live = df.sample(n=250, random_state=int(time.time()))
+    fig_live = px.scatter(df_live, x='CholesterolTotal', y='SerumCreatinine',title='Live Graph of Cholesterol Levels vs Serum Creatinine Levels')
+    fig_live.update_layout(width=700, height=700)
+    return pio.to_html(fig_live, full_html=False)
+
+@app.route('/LiverPlot')
+def index8():
+    pio.templates.default = "plotly"
+    df=pd.read_csv('app/static/Indian Liver Patient Dataset (ILPD).csv')
+    df_disease = df[df['Selector'] == 2].head(250)  
+
+    scatter_fig = px.scatter_3d(df_disease, x='Age', y='TB', z='DB',
+                                color='Gender', title='3D Scatter Plot of Age, TB, and DB (Disease Cases Only)',labels={'TB': 'Total Bilirubin', 'DB': 'Direct Bilirubin'},color_discrete_map={'Male': 'blue', 'Female': 'red'})  
+    
+    scatter_fig.update_layout(scene=dict(xaxis_title='Age',yaxis_title='Total Bilirubin (TB)',zaxis_title='Direct Bilirubin (DB)'),height=800) 
+
+    histogram_fig = px.histogram(df[df['Selector'] == 2], x='Age', color='Gender', 
+                                 title='Histogram of Age Groups for People with Disease',labels={'Age': 'Age Groups'},color_discrete_map={'Male': 'blue', 'Female': 'red'},nbins=10)  
+
+    histogram_fig.update_layout(width=600)  
+
+    surface_df = df_disease[['Age', 'Alkphos', 'A/G Ratio']].dropna()
+
+    x = np.linspace(surface_df['Age'].min(), surface_df['Age'].max(), 50)
+    y = np.linspace(surface_df['Alkphos'].min(), surface_df['Alkphos'].max(), 50)
+    x, y = np.meshgrid(x, y)
+    z = np.empty(x.shape)
+    
+    for i in range(len(x)):
+        for j in range(len(y)):
+            z[i, j] = np.interp(x[i, j], surface_df['Age'], surface_df['A/G Ratio'])
+
+    surface_fig = go.Figure(data=[go.Surface(z=z, x=x, y=y)])
+    surface_fig.update_layout(title='Surface Plot of A/G Ratio, Alkphos, and Age',scene=dict(xaxis_title='Age',yaxis_title='Alkphos',zaxis_title='A/G Ratio'),height=700)  
+    heatmap_fig = px.density_heatmap(df_disease, x='Age', y='Sgpt', z='Sgot',title='Heatmap of Age, SGPT, and SGOT',
+                                     labels={'Sgpt': 'SGPT (ALT)', 'Sgot': 'SGOT (AST)'},color_continuous_scale='Viridis')
+
+    
+    heatmap_fig.update_layout(width=600)  
+
+    
+    ag_ratio_pie = df_disease['A/G Ratio'] > 2.5
+    ag_ratio_fig = px.pie(df_disease, names=ag_ratio_pie, title='People with A/G Ratio > 2.5',labels={'A/G Ratio': 'A/G Ratio > 2.5'},color_discrete_map={True: 'green', False: 'red'})
+
+    gender_pie_fig = px.pie(df_disease, names='Gender', title='Percent of Males and Females with Disease',labels={'Gender': 'Gender'},color_discrete_map={'Male': 'blue', 'Female': 'red'})
+
+    age_groups = pd.cut(df_disease['Age'], bins=[0, 18, 60, df_disease['Age'].max()], labels=['Below 18', '18-60', 'Above 60'])
+    age_group_fig = px.pie(df_disease, names=age_groups, title='Percent of People with Disease by Age Group',labels={'Age': 'Age Group'},color_discrete_map={'Below 18': 'orange', '18-60': 'yellow', 'Above 60': 'purple'})
+
+    tb_pie = df_disease['TB'] > 0.9
+    tb_fig = px.pie(df_disease, names=tb_pie, title='People with TB > 0.9',labels={'TB': 'TB > 0.9'},color_discrete_map={True: 'blue', False: 'gray'})
+
+    db_pie = df_disease['DB'] > 0.7
+    db_fig = px.pie(df_disease, names=db_pie, title='People with DB > 0.7',labels={'DB': 'DB > 0.7'},color_discrete_map={True: 'cyan', False: 'gray'})
+
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(df_disease[['Age', 'TB', 'DB']])
+    df_disease['Cluster'] = kmeans.labels_
+
+    cluster_fig = px.scatter_3d(df_disease, x='Age', y='TB', z='DB',color='Cluster',  title='3D Scatter Plot of Clusters (Age, TB, DB)',labels={'TB': 'Total Bilirubin', 'DB': 'Direct Bilirubin'},
+                                color_continuous_scale='Viridis') 
+
+    cluster_fig.update_layout(scene=dict(xaxis_title='Age',yaxis_title='Total Bilirubin (TB)',zaxis_title='Direct Bilirubin (DB)'),height=800)  
+
+    scatter_graphJSON = pio.to_json(scatter_fig)
+    histogram_graphJSON = pio.to_json(histogram_fig)
+    surface_graphJSON = pio.to_json(surface_fig)
+    heatmap_graphJSON = pio.to_json(heatmap_fig)
+    ag_ratio_graphJSON = pio.to_json(ag_ratio_fig)
+    gender_pie_graphJSON = pio.to_json(gender_pie_fig)
+    age_group_graphJSON = pio.to_json(age_group_fig)
+    tb_graphJSON = pio.to_json(tb_fig)
+    db_graphJSON = pio.to_json(db_fig)
+    cluster_graphJSON = pio.to_json(cluster_fig)
+
+    return render_template('index.html', 
+                           scatter_graphJSON=scatter_graphJSON,
+                           histogram_graphJSON=histogram_graphJSON,
+                           surface_graphJSON=surface_graphJSON,
+                           heatmap_graphJSON=heatmap_graphJSON,
+                           ag_ratio_graphJSON=ag_ratio_graphJSON,
+                           gender_pie_graphJSON=gender_pie_graphJSON,
+                           age_group_graphJSON=age_group_graphJSON,
+                           tb_graphJSON=tb_graphJSON,
+                           db_graphJSON=db_graphJSON,
+                           cluster_graphJSON=cluster_graphJSON)
 
 @app.route('/result')
 @login_required_user
