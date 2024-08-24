@@ -11,4 +11,5 @@ if __name__=="__main__":
         print(checkups)
         print(kidney)
         print(liver)
+    # app.run(debug=True)
     socketio.run(app=app,debug=True)

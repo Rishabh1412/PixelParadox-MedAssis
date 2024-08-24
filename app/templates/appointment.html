@@ -80,10 +80,12 @@
             border-left: 4px solid #007bff;
             /* Blue left border */
         }
-        .doctor-hover{
+
+        .doctor-hover {
             transition: all 100ms cubic-bezier(0.165, 0.84, 0.44, 1);
         }
-        .doctor-hover:hover{
+
+        .doctor-hover:hover {
             cursor: pointer;
             background: aliceblue;
         }
@@ -92,7 +94,7 @@
     <div class="px-2 mt-2 py-2 px-md-3">
         <div class="container-fluid bg-light rounded h-75">
             <div class="row">
-                <div class="col-lg-8 p-3">
+                <div class="col-12 p-3">
                     <div class="p-3 rounded bg-white doctor-card shadow-sm border-0">
                         <div class="card-body d-flex gap-3">
                             <div>
@@ -102,93 +104,72 @@
                                 </div>
                             </div>
                             <div class="pb-3">
-                                <h5 class="card-title fw-bold">Doctor Name</h5>
-                                <p class="card-text">--</p>
+                                <h6 class="card-title fw-semibold">Doctor Name:</h6>
+                                <h5 class="card-text fw-bold">{{ doctor.username }}</h5>
                             </div>
                         </div>
                         <div class="row px-5">
                             <div class="col-6">
                                 <p class="m-0 fw-semibold">Availability:</p>
-                                <p class="availability">--</p>
+                                <p class="availability">{{ doctor.availability }}</p>
                             </div>
                             <div class="col-6">
                                 <p class="m-0 fw-semibold">Contact number:</p>
-                                <p class="phone">--</p>
+                                <p class="phone">{{ doctor.phone }}</p>
                             </div>
                         </div>
                         <div class="row px-5">
                             <div class="col-6">
                                 <p class="m-0 fw-semibold">City:</p>
-                                <p class="city">--</p>
+                                <p class="city">{{ doctor.city }}</p>
                             </div>
                             <div class="col-6">
                                 <p class="m-0 fw-semibold">Pincode:</p>
-                                <p class="pincode">--</p>
+                                <p class="pincode">{{ doctor.pincode }}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="card time-select-panel rounded px-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Select Appointment Time</h5>
-                            <div class="form-group">
-                                <label for="appointmentTime" class="fw-semibold mb-2">Choose a time:</label>
-                                <div class="d-flex gap-2 w-100" style="overflow-x: auto;">
-                                    <div class="btn btn-outline-dark btn-sm">9:00-9:30am</div>
-                                    <div class="btn btn-outline-dark btn-sm">9:30-10:00am</div>
-                                    <div class="btn btn-outline-dark btn-sm">10:00-10:30am</div>
-                                    <div class="btn btn-outline-dark btn-sm">12:00-12:30am</div>
+                    <form method="POST">
+                        {{ appointmentform.hidden_tag() }}
+                        <div class="card time-select-panel rounded px-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ appointmentform.time_slot.label }}</h5>
+                                <div class="form-group gap-2 ">
+                                    {% for subfield in appointmentform.time_slot %}
+                                    <div class="btn btn-outline-dark  mx-2 my-2">
+                                        <input type="radio" id="{{ subfield.id }}" name="{{ subfield.name }}" value="{{ subfield.data }}" {%
+                                            if 'Booked' in subfield.label.text %} disabled {% endif %}>
+                                        <label for="{{ subfield.id }}">{{ subfield.label.text }}</label>
+                                    </div>
+                                    {% endfor %}
                                 </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-6">
-                                    <p class="fw-semibold m-0">Date:</p>
-                                    <input type="date" class="px-3 py-2 bg-light border-0 rounded-pill" />
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                    {{ appointmentform.date.label }} {{ appointmentform.date }}
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <p class="fw-semibold m-0">Day:</p>
-                                    <select class="px-3 py-2 bg-light border-0 rounded-pill">
-                                        <option>Monday</option>
-                                        <option>Tuesday</option>
-                                        <option>Wednesday</option>
-                                        <option>Thursday</option>
-                                        <option>Friday</option>
-                                        <option>Saturday</option>
-                                        <option>Sunday</option>
-                                    </select>
+                                <div class="row mt-3">
+                                    {{ appointmentform.doctorId }}
+                                </div>
+                                <div class="row mt-3">
+                                    
+                                    <div class="col-12 px-2">
+                                        {{ appointmentform.submit(class='btn btn-dark w-100') }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </form>
+                    <div class="col-12 px-4 bg-white shadow rounded py-3 ">
+                        <a href="{{ url_for('join') }}"><button class="w-100 btn btn-outline-dark">Join Appointment</button></a>
                     </div>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-dark">Fix Appointment</button>
-                        <button class="btn btn-outline-dark">Join Appointment</button>
-                    </div>
+                    
+                  
+
+
                 </div>
 
-                <!-- Right Sidebar -->
-                <div class="col-lg-4 doctor-sidebar shadow border-top border-start border-1 border-body-seconday bg-light border-left"
-                    style="height: 90vh;" id="doctorSidebar">
-                    <h5 class="px-2 pt-3 pb-1 text-dark d-flex justify-content-between align-items-center">
-                        Select a Doctor
-                        <i class="btn btn-dark p-3 rounded-circle fa-solid fa-xmark d-lg-none" id="closeSidebarBtn"></i>
-                    </h5>
-                    <div class="px-0 pb-2">
-                        <input type="text" id="doctorSearch" class="form-control w-100 rounded-pill"
-                            placeholder="Search for a doctor...">
-                    </div>
-                    <ul class="list-group" id="doctorList">
-                        {% for doctor in doctors_data %}
-                        <li class="list-group-item d-flex doctor-hover justify-content-between selectable-doctor"
-                            data-doctor-id="{{ doctor.id }}">
-                            <div>
-                                <i class="fa-solid pe-2 fa-user-doctor"></i>{{ doctor.username }}
-                            </div>
-                            <span class="badge d-flex align-items-center text-bg-dark">{{ doctor.specialization
-                                }}</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+
             </div>
 
             <!-- Toggle Button (Visible on small and medium devices) -->
@@ -201,65 +182,8 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Doctor data from Flask
-            const doctorsData = {{ doctors_data| tojson | safe
-        }};
 
-        // Function to clear selection
-        function clearSelection() {
-            document.querySelectorAll('#doctorList .selectable-doctor').forEach(function (doctor) {
-                doctor.classList.remove('selected-doctor');
-            });
-        }
 
-        // Function to handle doctor selection
-        document.querySelectorAll('#doctorList .selectable-doctor').forEach(function (doctor) {
-            doctor.addEventListener('click', function () {
-                // Clear previous selection
-                clearSelection();
 
-                // Highlight selected doctor
-                this.classList.add('selected-doctor');
-
-                // Fetch doctor ID
-                let doctorId = this.getAttribute('data-doctor-id');
-
-                // Find the selected doctor's data
-                let selectedDoctor = doctorsData.find(d => d.id == doctorId);
-
-                // Update left window with selected doctor's details
-                document.querySelector('.doctor-card .card-title').textContent = selectedDoctor.username;
-                document.querySelector('.doctor-card .card-text').textContent = selectedDoctor.specialization;
-                document.querySelector('.doctor-card .availability').textContent = selectedDoctor.availability ? 'Yes' : 'No';
-                document.querySelector('.doctor-card .phone').textContent = selectedDoctor.phone;
-                document.querySelector('.doctor-card .city').textContent = selectedDoctor.city;
-                document.querySelector('.doctor-card .pincode').textContent = selectedDoctor.pincode;
-            });
-        });
-
-        // Function to handle search
-        document.getElementById('doctorSearch').addEventListener('input', function () {
-            let filter = this.value.toLowerCase();
-            document.querySelectorAll('#doctorList .selectable-doctor').forEach(function (doctor) {
-                let doctorName = doctor.textContent.toLowerCase();
-                if (doctorName.includes(filter)) {
-                    doctor.style.display = ''; // Show the doctor
-                } else {
-                    doctor.style.display = 'none'; // Hide the doctor
-                }
-            });
-        });
-
-        // Toggle sidebar visibility
-        document.getElementById('toggleSidebarBtn').addEventListener('click', function () {
-            document.getElementById('doctorSidebar').classList.toggle('show');
-        });
-        document.getElementById('closeSidebarBtn').addEventListener('click', function () {
-            document.getElementById('doctorSidebar').classList.toggle('show');
-        });
-        });
-    </script>
 </div>
 {% endblock %}

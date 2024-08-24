@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField,RadioField,IntegerField,SelectField,DecimalField,FileField,DateTimeField,TextAreaField,FloatField
+from wtforms import StringField, PasswordField, SubmitField,RadioField,IntegerField,SelectField,DecimalField,FileField,DateTimeField,TextAreaField,FloatField,DateField,HiddenField
 from wtforms.validators import Length, Email, Optional, DataRequired, ValidationError
 from app import app
 from app.models import User
@@ -167,3 +167,51 @@ class DietChart(FlaskForm):
     preference=StringField('Preferrence: ',validators=[DataRequired()],render_kw={'placeholder':"Veg/Non-Veg..."})
     region=StringField('Region: ',validators=[DataRequired()],render_kw={'placeholder':"Your region"})
     submit=SubmitField('Prepare Chart')
+
+class UserAskForm(FlaskForm):
+    user_name = StringField('Name', validators=[DataRequired(), Length(max=120)], 
+                            render_kw={"placeholder": "Enter your name"})
+    medicine_name = StringField('Medicine Name',validators=[DataRequired(), Length(max=120)], 
+                                render_kw={"placeholder": "Enter the name of the medicine"})
+    user_pincode = StringField('Pincode', 
+                               validators=[DataRequired(), Length(max=10)], 
+                               render_kw={"placeholder": "Enter your pincode"})
+    user_city = StringField('City', 
+                            validators=[DataRequired(), Length(max=120)], 
+                            render_kw={"placeholder": "Enter your city"})
+    submit = SubmitField('Submit')
+
+class RetailerReplyForm(FlaskForm):
+    user_name = StringField('Name', 
+                            validators=[DataRequired(), Length(max=120)], 
+                            render_kw={"placeholder": "Enter your name"})
+    medicine_name = StringField('Medicine Name', 
+                                validators=[DataRequired(), Length(max=120)], 
+                                render_kw={"placeholder": "Enter the name of the medicine"})
+    user_pincode = StringField('Pincode', 
+                               validators=[DataRequired(), Length(max=10)], 
+                               render_kw={"placeholder": "Enter your pincode"})
+    user_city = StringField('City', 
+                            validators=[DataRequired(), Length(max=120)], 
+                            render_kw={"placeholder": "Enter your city"})
+    address = StringField('Address', 
+                          validators=[DataRequired(), Length(max=200)], 
+                          render_kw={"placeholder": "Enter the full address of your shop"})
+    shop_name = StringField('Shop Name', 
+                            validators=[DataRequired(), Length(max=120)], 
+                            render_kw={"placeholder": "Enter the name of your shop"})
+    price=FloatField('Price',validators=[DataRequired()],render_kw={"placeholder": "Enter the price"})
+    submit = SubmitField('Submit')
+
+class AppointmentForm(FlaskForm):
+    time_slot = RadioField('Time Slot',
+                           validators=[DataRequired()],
+                           render_kw={"class": "d-flex gap-2 w-100", "style": "overflow-x: auto;"})
+
+    date = DateField('Date', format='%Y-%m-%d', 
+                     validators=[DataRequired()], 
+                     render_kw={"class": "px-3 py-2 bg-light border-0 rounded-pill"})
+    
+    doctorId = HiddenField('Doctor ID', validators=[DataRequired()])
+
+    submit = SubmitField('Fix Appointment')

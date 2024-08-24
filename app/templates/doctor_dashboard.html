@@ -1,39 +1,39 @@
 {% extends "doctor-base.html" %} {% block title %}Medassis | Dashboard{% endblock %} {% block
-    content %}
-    {% include "feedback.html" %}
-    <div style="height: 100vh; overflow-y:auto">
-        <div class="px-4 pt-3 pt-md-4 position-relative d-flex justify-content-between align-items-center mobhead">
-            <!-- <div class="d-flex justify-content-between postion-fixed pt-5 pt-md-0"> -->
-    
-            <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">Dashboard</h4>
-    
-            <a href="{{ url_for('doctor_logout') }}"><button class="logout me-5 me-md-0 shadow postion-fixed">
-                    Log Out <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
-            </a>
-            <i class="fa-solid fa-bars d-md-none me-2 d-flex position-fixed menu-button shadow"
-                onclick="togglesidebar()"></i>
-        </div>
-        <div class="p-4 pt-2 pt-md-0 ">
-    
-            <h5 class=" ps-md-2 fs-5 fs-md-5 pt-1 fw-semibold">Appointments</h4>
-    
-                <div class="row gap-3 mt-4 px-2">
-                    <div class="col-12 w-100 bg-white shadow py-4 py-3 rounded d-flex flex-md-row align-items-center flex-column justify-content-between gap-3 px-5">
-                        <img src="../static/assests/online-support.gif" width="150" height="150" alt="">
-                        <a href="{{ url_for('join') }}"><button class="btn btn-outline-success py-3 px-5 fs-5 btn-lg rounded-pill">
-                            JOIN
-                        </button>
-                        </a>
-                        
-                    </div>
-    
-    
-                </div>
-                <div class="my-2 bg-white rounded px-4 py-3">
-                   
-    
-                </div>
-        </div>
+content %}
+{% include "feedback.html" %}
+<div style="height: 100vh; overflow-y:auto">
+    <div class="px-4 pt-3 pt-md-4 position-relative d-flex justify-content-between align-items-center mobhead">
+        <!-- <div class="d-flex justify-content-between postion-fixed pt-5 pt-md-0"> -->
+
+        <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">Dashboard</h4>
+
+        <a href="{{ url_for('doctor_logout') }}"><button class="logout me-5 me-md-0 shadow postion-fixed">
+                Log Out <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </a>
+        <i class="fa-solid fa-bars d-md-none me-2 d-flex position-fixed menu-button shadow"
+            onclick="togglesidebar()"></i>
     </div>
-    {% endblock %}
+    <div class="p-4 pt-2 pt-md-0 ">
+
+        <h5 class=" ps-md-2 fs-5 fs-md-5 pt-1 fw-semibold">Appointments</h4>
+
+            <div class="row gap-3 mt-4 px-2">
+                <div class="col-12 w-100 bg-white shadow py-4 py-3 rounded d-flex flex-md-row align-items-center flex-column justify-content-between gap-3 px-5">
+                    <img src="../static/assests/online-support.gif" width="150" height="150" alt="">
+                    <a href="{{ url_for('join') }}"><button class="btn btn-outline-success py-3 px-5 fs-5 btn-lg rounded-pill">
+                        JOIN
+                    </button>
+                    </a>
+                    
+                </div>
+
+
+            </div>
+            <div class="my-2 bg-white rounded px-4 py-3">
+               
+
+            </div>
+    </div>
+</div>
+{% endblock %}

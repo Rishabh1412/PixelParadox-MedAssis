@@ -1,11 +1,9 @@
-{% extends "shop-base.html" %} {% block title %}Medassis | Med-find-S{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+
+{% block title %}Medassis | Med-Finder{% endblock %}
+
+{% block content %}
 {% include "feedback.html" %}
-<style>
-    .action-button:hover{
-        background: aliceblue;
-    }
-</style>
 <div style="color: darkgrey; height: 100vh; border-radius: 0;" class="position-relative">
     <div class="chat-wrapper" id="chat-wrapper-user">
         <div class="chat-header">
@@ -47,33 +45,42 @@ content %}
 
 
         <div class="d-flex flex-column gap-1 gap-md-2 fixed start-0 bottom-0 position-absolute z-5">
-
-            <button id="reply-button-user" type="button" data-bs-toggle="modal" data-bs-target="#reply-modal"
-                style="width:50px; height:50px"
-                class="action-button border-0 shadow rounded-circle fs-5 ms-2 mb-2 d-flex align-items-center justify-content-center"><i
-                    class="p-4 fa-solid fa-reply"></i></button>
-
+            <button id="ask-button-user"  type="button" data-bs-toggle="modal" data-bs-target="#ask-modal" style="width:50px; height:50px;" class="action-button border-0 shadow rounded-circle fs-5 ms-2  d-flex align-items-center justify-content-center"><i class="p-4 fa-solid fa-paper-plane"></i></button>
+            
+            
         </div>
-
-        {% include 'replyform.html' %}
+        {% include 'askform.html' %}
+        
     </div>
 </div>
 <script>
-
-
-    document.getElementById('reply-button-user').addEventListener('click', function (event) {
-        event.preventDefault();
-        const formData = new FormData(document.querySelector('form#retailerreplyform'));
-        fetch('/medicine-platform', {
-            method: 'POST',
-            body: formData
-        }).then(response => {
-            if (response.ok) {
-                // Reload the chat to show updated messages
-                location.reload();
-            }
+    document.getElementById('ask-button-user').addEventListener('click', function (event) {
+            event.preventDefault();
+            const formData = new FormData(document.querySelector('form#useraskform'));
+            fetch('/medicine-platform', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    // Reload the chat to show updated messages
+                    location.reload();
+                }
+            });
         });
-    });
+
+        document.getElementById('reply-button-user').addEventListener('click', function (event) {
+            event.preventDefault();
+            const formData = new FormData(document.querySelector('form#retailerreplyform'));
+            fetch('/medicine-platform', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    // Reload the chat to show updated messages
+                    location.reload();
+                }
+            });
+        });
 
 
 </script>

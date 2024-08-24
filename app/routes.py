@@ -1,7 +1,7 @@
 from app import app,db, session
 from flask import render_template, redirect, url_for, flash, request, jsonify
-from app.forms import DiabetesForm,OtpForm,SignInForm,SignUpForm,LiverForm,KidneyForm,XrayForm,ReminderForm,UserProfileForm,FeedbackForm,ChatbotForm,DietChart,DoctorProfileForm
-from app.models import User, Checkup, Kidney, Liver,Message, Reminder, Doctor, Shop
+from app.forms import DiabetesForm,OtpForm,SignInForm,SignUpForm,LiverForm,KidneyForm,XrayForm,ReminderForm,UserProfileForm,FeedbackForm,ChatbotForm,DietChart,DoctorProfileForm,UserAskForm,RetailerReplyForm,AppointmentForm
+from app.models import User, Checkup, Kidney, Liver,Message, Reminder, Doctor,FormMessage, Appointment, Shop
 from app.mails import send_email
 import numpy as np
 import pickle
@@ -26,6 +26,7 @@ from app.hospitalFunction import generate_hospital_map
 from functools import wraps
 from app.diet_chart import generate_diet_chart
 from app.make_table import format_response_as_table
+import pytz
 
 model = pickle.load(open('app/static/model.pkl', 'rb'))
 scaler = pickle.load(open('app/static/scaler.pkl', 'rb'))
@@ -77,10 +78,49 @@ def login_required_shop(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def update_value_in_row_and_column(table, filter_column_name, filter_value, target_column_name, new_value):
+    # Step 1: Search for the row where filter_column_name equals filter_value
+    record = table.query.filter(getattr(table, filter_column_name) == filter_value).first()
+    
+    if not record:
+        raise ValueError(f"No record found where '{filter_column_name}' equals '{filter_value}'.")
+
+    # Step 2: Check if the target column exists
+    if not hasattr(record, target_column_name):
+        raise ValueError(f"Column '{target_column_name}' does not exist in the table.")
+    
+    # Step 3: Update the value in the target column
+    setattr(record, target_column_name, new_value)
+    
+    # Commit the changes to the database
+    db.session.commit()
+
+    return f"Updated '{target_column_name}' with value '{new_value}' where '{filter_column_name}' equals '{filter_value}'."
+
+def update_val_to_no(table, filter_column_name, filter_value, target_column_name, new_value):
+    record = table.query.filter(getattr(table, filter_column_name) == filter_value).first()
+    
+    if not record:
+        raise ValueError(f"No record found where '{filter_column_name}' equals '{filter_value}'.")
+
+    # Step 2: Check if the target column exists
+    if not hasattr(record, target_column_name):
+        raise ValueError(f"Column '{target_column_name}' does not exist in the table.")
+    
+    # Step 3: Update the value in the target column
+    setattr(record, target_column_name, new_value)
+    
+    # Commit the changes to the database
+    db.session.commit()
+
+    return f"Updated '{target_column_name}' with value '{new_value}' where '{filter_column_name}' equals '{filter_value}'."
+
+
 valid_room_codes = {}
 
 def generate_room_code():
     return str(random.randint(1000, 9999))
+
 
 phone=0
 name=[]
@@ -164,7 +204,7 @@ def api_test():
 @login_required_user
 def dashboard():
     flash('This is a flash message with bounce effect!', category='success')
-
+    doctors=Doctor.query.all()
     feedback_form = FeedbackForm()
     dietchart = DietChart()
 
@@ -199,14 +239,14 @@ def dashboard():
         send_email("anujkaushal1068@gmail.com", email_subject, email_body)
         print("Email sent successfully!")
 
-        
         return redirect(url_for('dashboard'))
+   
     
     current_user = get_current_user()
     if not current_user:
         return redirect(url_for("login"))
 
-    return render_template('dashboard.html', user_data=current_user, feedback_form=feedback_form,dietchart=dietchart)
+    return render_template('dashboard.html', user_data=current_user,doctors=doctors, feedback_form=feedback_form,dietchart=dietchart)
 
 
 @app.route('/diet_chart_maker')
@@ -236,16 +276,30 @@ def diet_chart_maker():
     response = format_response_as_table(response)
     return render_template('chart_diet.html', response=response, user_data=get_current_user(), feedback_form=feedback_form)
 
+
 @app.route('/doctor-dashboard',methods=['GET','POST'])
 @login_required_doctor
 def doctor_dashboard():
+    # appointments=Appointment.query.filter_by(doctor_id=get_current_doctor().id)
+    # slots=[appointments.slot1,appointments.slot2,appointments.slot3,appointments.slot4,appointments.slot5,appointments.slot6,appointments.slot7,appointments.slot8,appointments.slot9,appointments.slot10,appointments.slot11,appointments.slot12,appointments.slot13,appointments.slot14,appointments.slot15,appointments.slot16,appointments.slot17,appointments.slot18,]
+    # print(slots)
     feedback_form = FeedbackForm()
     if feedback_form.validate_on_submit():
-        response = feedback_form.feedback.data
-        print(response)
-        send_email("anujkaushal1068@gmail.com", f"Feedback from {get_current_user().username}", f"From : {get_current_user().email_address}<br/>Response : {feedback_form.feedback.data}")
-        print("sent mail")
-        return redirect(url_for('dashboard'))
+        reaction = request.form.get('reaction')  # Capture emoji reaction
+        feedback_text = feedback_form.feedback.data  # Capture feedback text
+
+        # Construct the email content
+        email_subject = f"Feedback from {get_current_user().username}"
+        email_body = f"""
+        From: {get_current_user().email_address}<br/>
+        Reaction: {reaction}<br/>
+        Feedback: {feedback_text}
+        """
+        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
+        print("Email sent successfully!")
+
+        return redirect(url_for('doctor_dashboard'))
+    
     current_doctor = get_current_doctor()
     if not current_doctor:
         return redirect(url_for("doctorlogin"))
@@ -275,7 +329,6 @@ def profile():
         send_email("anujkaushal1068@gmail.com", email_subject, email_body)
         print("Email sent successfully!")
 
-    
         return redirect(url_for('profile'))
     
 
@@ -313,10 +366,20 @@ def doctor_profile():
     docform=DoctorProfileForm()
     feedback_form=FeedbackForm()
     if feedback_form.validate_on_submit():
-        response = feedback_form.feedback.data
-        print(response)
-        send_email("anujkaushal1068@gmail.com", f"Feedback from {get_current_doctor().username}", f"From : {get_current_doctor().email_address}\nResponse : {feedback_form.feedback.data}")
-        print("sent mail")
+        reaction = request.form.get('reaction')  # Capture emoji reaction
+        feedback_text = feedback_form.feedback.data  # Capture feedback text
+
+        # Construct the email content
+        email_subject = f"Feedback from {get_current_user().username}"
+        email_body = f"""
+        From: {get_current_user().email_address}<br/>
+        Reaction: {reaction}<br/>
+        Feedback: {feedback_text}
+        """
+        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
+        print("Email sent successfully!")
+
+        
         return redirect(url_for('doctor_profile'))
 
     user=Doctor.query.filter_by(id=get_current_doctor().id).first()
@@ -328,6 +391,17 @@ def doctor_profile():
             user.age = docform.age.data
         if docform.available.data:
             print(docform.available.data)
+            if docform.available.data=="No":
+                temp="slot"
+                for i in range(1, 19):
+                    slots=temp+str(i)
+                    result=update_val_to_no(Appointment, 'doctor_id', user.id, slots, True)
+
+            else:
+                temp="slot"
+                for i in range(1, 19):
+                    slots=temp+str(i)
+                    result=update_val_to_no(Appointment, 'doctor_id', user.id, slots, False)
 
             user.availability = docform.available.data
         if docform.specialization.data:
@@ -346,219 +420,6 @@ def doctor_profile():
         return redirect(url_for('doctor_profile'))
 
     return render_template('doctor_profile.html',user=user,user_data=get_current_doctor(),docform=docform,feedback_form=feedback_form)
-
-@app.route('/community-support',methods=['GET','POST'])
-@login_required_user
-def community():
-    feedback_form = FeedbackForm()
-    if feedback_form.validate_on_submit():
-        reaction = request.form.get('reaction')  # Capture emoji reaction
-        feedback_text = feedback_form.feedback.data  # Capture feedback text
-
-        # Construct the email content
-        email_subject = f"Feedback from {get_current_user().username}"
-        email_body = f"""
-        From: {get_current_user().email_address}<br/>
-        Reaction: {reaction}<br/>
-        Feedback: {feedback_text}
-        """
-        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
-        print("Email sent successfully!")
-
-        return redirect(url_for('community'))
-    return render_template('community.html',user_data=get_current_user().username, feedback_form=feedback_form)
-
-@app.route('/map',methods=['GET','POST'])
-@login_required_user
-def usermap():
-    user_data = User.query.filter_by(id=get_current_user().id).first()
-    print(user_data.pincode)
-    generate_hospital_map(f"{user_data.pincode}")
-    feedback_form = FeedbackForm()
-    if feedback_form.validate_on_submit():
-        reaction = request.form.get('reaction')  # Capture emoji reaction
-        feedback_text = feedback_form.feedback.data  # Capture feedback text
-
-        # Construct the email content
-        email_subject = f"Feedback from {get_current_user().username}"
-        email_body = f"""
-        From: {get_current_user().email_address}<br/>
-        Reaction: {reaction}<br/>
-        Feedback: {feedback_text}
-        """
-        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
-        print("Email sent successfully!")
-
-        return redirect(url_for('usermap'))
-    return render_template('map.html', pincode=user_data.pincode,user_data=get_current_user())
-
-@socketio.on('send_message')
-def handle_send_message(data):
-    
-    print(f"Received message: {data}")
-    try:
-        print(data.get('timestamp'))
-        
-        timestamp = datetime.fromisoformat(data.get('timestamp'))  
-        print(timestamp)
-        # Convert ISO string to datetime
-        message = Message(content=data['message'], author=get_current_user(), timestamp=timestamp)
-        db.session.add(message)
-        db.session.commit()
-        print("Message saved to database")
-    except Exception as e:
-        print(f"Error saving message: {e}")
-        db.session.rollback()
-    else:
-        emit('receive_message', {
-            'username': get_current_user().username,
-            'message': data['message'],
-            'timestamp': data['timestamp']
-        }, broadcast=True)
-
-@app.route('/load_messages')
-@login_required_user
-def load_messages():
-    print("Loading messages...")
-    messages = Message.query.order_by(Message.timestamp).all()
-    messages_data = [{
-        'content': message.content,
-        'username': message.author.username,
-        'timestamp': message.timestamp.isoformat()
-    } for message in messages]
-    print(f"Loaded messages: {messages_data}")
-    return jsonify({'messages': messages_data})
-
-@app.route('/doc_or_user')
-def user_doc():
-    return render_template('user_or_doctor.html')
-
-@app.route('/appointment', methods=['GET', 'POST'])
-def appointment():
-    doctors = Doctor.query.all()
-
-    # Convert doctors to a list of dictionaries for JSON serialization
-    doctors_data = [
-        {
-            'id': doctor.id,
-            'username': doctor.username,
-            'specialization': doctor.specialization,
-            'availability': doctor.availability,
-            'phone': doctor.phone,
-            'city': doctor.city,
-            'pincode': doctor.pincode
-        }
-        for doctor in doctors
-    ]
-
-    feedback_form = FeedbackForm()
-    if feedback_form.validate_on_submit():
-        response = feedback_form.feedback.data
-        send_email("anujkaushal1068@gmail.com", f"Feedback from {get_current_user().username}", f"From : {get_current_user().email_address}\nResponse : {response}")
-        return redirect(url_for('appointment'))
-
-    return render_template('appointment.html', user_data=get_current_user(), feedback_form=feedback_form, doctors_data=doctors_data)
-
-
-@app.route('/sign-in', methods=['GET','POST'])
-def login():
-    form=SignInForm()
-    if form.validate_on_submit():
-        with app.app_context():
-            attempted_user=User.query.filter_by(username=form.username.data).first()
-            if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
-                # login_user(attempted_user)
-                session['user_id']=attempted_user.id
-                flash(f'You have successfully logged in as : {attempted_user.username}' , category='success')
-                return redirect(url_for('dashboard'))
-            else:
-                flash(f'Username and password do not match ! Please try again', category='error')
-                flash(f'OTP does not match', category='error')
-
-    return render_template('signin.html',signin=form)
-
-@app.route('/sign-up', methods=['GET','POST'])
-def signup():
-    form=SignUpForm()
-    if form.validate_on_submit():
-        global user_details
-        user_details.append(form.username.data)
-        user_details.append(form.email_address.data)
-        user_details.append(form.password.data)
-        global otp
-        otp=random.randint(100000, 999999)
-        get_otp.append(otp)
-        send_email(form.email_address.data,"Medassis Verification", f"Welcome to Medassis !!!\n Your OTP for verification is {otp}. Please enter your OTP to create an account.")
-        return redirect(url_for('otp'))
-            
-        #else:
-           # flash(f"Wrong OTP eneted !!! Please enter it correctly", category='error')
-    if form.errors != {}:
-        for err_msg in form.errors.values():
-            flash(f'There was an error with creating a user: {err_msg}', category='error')
-
-    return render_template('signup.html',signup=form)
-
-
-
-@app.route('/doctor-sign-in', methods=['GET', 'POST'])
-def doctorlogin():
-    form = SignInForm()
-    if form.validate_on_submit():
-        with app.app_context():
-            attempted_user = Doctor.query.filter_by(username=form.username.data).first()
-            try:
-                if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
-                    session['doctor_id'] = attempted_user.id
-                    flash(f'You have successfully logged in as: {attempted_user.username}', category='success')
-                    return redirect(url_for('doctor_dashboard'))
-                else:
-                    flash('Username and password do not match! Please try again.', category='error')
-            except Exception as e:
-                flash(f'An error occurred: {str(e)}', category='error')
-                flash('OTP does not match', category='error')
-
-    return render_template('doctor_login.html', signin=form)
-
-
-
-@app.route('/doctor-sign-up', methods=['GET','POST'])
-def doctor_signup():
-    form=SignUpForm()
-    if form.validate_on_submit():
-        global user_details
-        user_details.append(form.username.data)
-        user_details.append(form.email_address.data)
-        user_details.append(form.password.data)
-        global otp
-        otp=random.randint(100000, 999999)
-        get_otp.append(otp)
-        send_email(form.email_address.data,"Medassis Verification", f"Welcome to Medassis !!!\n Your OTP for verification is {otp}. Please enter your OTP to create an account.")
-        return redirect(url_for('doctor_otp'))
-            
-        #else:
-           # flash(f"Wrong OTP eneted !!! Please enter it correctly", category='error')
-    if form.errors != {}:
-        for err_msg in form.errors.values():
-            flash(f'There was an error with creating a user: {err_msg}', category='error')
-
-    return render_template('doctor_signup.html',signup=form)
-
-@app.route('/logout')
-@login_required_user
-def logout():
-    print("Logout")
-    # logout_user()
-    session.pop('user_id', None)
-    return redirect(url_for('user_doc'))
-
-@app.route('/doctor-logout')
-@login_required_doctor
-def doctor_logout():
-    print("Logout")
-    # logout_user()
-    session.pop('doctor_id', None)
-    return redirect(url_for('user_doc'))
 
 @app.route('/shop-sign-in', methods=['GET','POST'])
 def shoplogin():
@@ -633,7 +494,7 @@ def shop_otp():
 @login_required_shop
 def shop_dashboard():
     feedback_form = FeedbackForm()
-    # retailerreplyform=RetailerReplyForm()
+    retailerreplyform=RetailerReplyForm()
     if feedback_form.validate_on_submit():
         reaction = request.form.get('reaction')  # Capture emoji reaction
         feedback_text = feedback_form.feedback.data  # Capture feedback text
@@ -654,7 +515,7 @@ def shop_dashboard():
     if not current_shop:
         return redirect(url_for("shoplogin"))
 
-    return render_template('shop_dashboard.html', user_data=current_shop, feedback_form=feedback_form)
+    return render_template('shop_dashboard.html', user_data=current_shop, feedback_form=feedback_form,retailerreplyform=retailerreplyform)
 
 @app.route('/shop-logout')
 @login_required_shop
@@ -664,6 +525,368 @@ def shop_logout():
     session.pop('shop_id', None)
     return redirect(url_for('user_doc'))
 
+@app.route('/map',methods=['GET','POST'])
+@login_required_user
+def usermap():
+    user_data = User.query.filter_by(id=get_current_user().id).first()
+    print(user_data.pincode)
+    generate_hospital_map(f"{user_data.pincode}")
+    feedback_form = FeedbackForm()
+    if feedback_form.validate_on_submit():
+        reaction = request.form.get('reaction')  # Capture emoji reaction
+        feedback_text = feedback_form.feedback.data  # Capture feedback text
+
+        # Construct the email content
+        email_subject = f"Feedback from {get_current_user().username}"
+        email_body = f"""
+        From: {get_current_user().email_address}<br/>
+        Reaction: {reaction}<br/>
+        Feedback: {feedback_text}
+        """
+        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
+        print("Email sent successfully!")
+
+        
+        return redirect(url_for('usermap'))
+    return render_template('map.html', pincode=user_data.pincode,user_data=get_current_user())
+
+
+@app.route('/community-support',methods=['GET','POST'])
+@login_required_user
+def community():
+    feedback_form = FeedbackForm()
+    if feedback_form.validate_on_submit():
+        reaction = request.form.get('reaction')  # Capture emoji reaction
+        feedback_text = feedback_form.feedback.data  # Capture feedback text
+
+        # Construct the email content
+        email_subject = f"Feedback from {get_current_user().username}"
+        email_body = f"""
+        From: {get_current_user().email_address}<br/>
+        Reaction: {reaction}<br/>
+        Feedback: {feedback_text}
+        """
+        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
+        print("Email sent successfully!")
+
+        return redirect(url_for('community'))
+    return render_template('community.html',user_data=get_current_user().username, feedback_form=feedback_form)
+
+
+
+@socketio.on('send_message')
+def handle_send_message(data):
+    print(f"Received message: {data}")
+    try:
+        timestamp_utc = datetime.fromisoformat(data.get('timestamp').replace('Z', '+00:00'))
+
+        local_tz = pytz.timezone('Asia/Kolkata')
+        timestamp_local = timestamp_utc.astimezone(local_tz)
+        print(f"Timestamp in local time: {timestamp_local}")
+
+        message = Message(content=data['message'], author=get_current_user(), timestamp=timestamp_local)
+        db.session.add(message)
+        db.session.commit()
+        print("Message saved to database")
+
+    except Exception as e:
+        print(f"Error saving message: {e}")
+        db.session.rollback()
+    else:
+        emit('receive_message', {
+            'username': get_current_user().username,
+            'message': data['message'],
+            'timestamp': timestamp_local.isoformat()
+        }, broadcast=True)
+
+@app.route('/load_messages')
+@login_required_user
+def load_messages():
+    print("Loading messages...")
+    messages = Message.query.order_by(Message.timestamp).all()
+    messages_data = [{
+        'content': message.content,
+        'username': message.author.username,
+        'timestamp': message.timestamp.isoformat()
+    } for message in messages]
+    print(f"Loaded messages: {messages_data}")
+    return jsonify({'messages': messages_data})
+
+
+@app.route('/medicine-platform', methods=['GET', 'POST'])
+def medicine_platform():
+    useraskform = UserAskForm()
+    feedback_form = FeedbackForm()
+    if feedback_form.validate_on_submit():
+        reaction = request.form.get('reaction')  # Capture emoji reaction
+        feedback_text = feedback_form.feedback.data  # Capture feedback text
+
+        # Construct the email content
+        email_subject = f"Feedback from {get_current_user().username}"
+        email_body = f"""
+        From: {get_current_user().email_address}<br/>
+        Reaction: {reaction}<br/>
+        Feedback: {feedback_text}
+        """
+        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
+        print("Email sent successfully!")
+
+        return redirect(url_for('medicine_platform'))
+
+    if useraskform.validate_on_submit():
+        
+        new_message = FormMessage(
+            medicine_name=useraskform.medicine_name.data,
+            user_name=useraskform.user_name.data,
+            user_pincode=useraskform.user_pincode.data,
+            user_city=useraskform.user_city.data,
+            msg_type='ask'
+        )
+        db.session.add(new_message)
+        db.session.commit()
+        return redirect(url_for('medicine_platform'))
+    messages = FormMessage.query.order_by(FormMessage.timestamp.asc()).all()
+
+    return render_template(
+        'medicine-platform.html',
+        user_data=get_current_user(),
+        feedback_form=feedback_form,
+        useraskform=useraskform,
+        messages=messages
+    )
+    
+@app.route('/retail', methods=['GET', 'POST'])
+def retail():
+    retailerreplyform = RetailerReplyForm()
+    feedback_form = FeedbackForm()
+    if feedback_form.validate_on_submit():
+        reaction = request.form.get('reaction')  # Capture emoji reaction
+        feedback_text = feedback_form.feedback.data  # Capture feedback text
+
+        # Construct the email content
+        email_subject = f"Feedback from {get_current_user().username}"
+        email_body = f"""
+        From: {get_current_user().email_address}<br/>
+        Reaction: {reaction}<br/>
+        Feedback: {feedback_text}
+        """
+        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
+        print("Email sent successfully!")
+
+        return redirect(url_for('retail'))
+    if retailerreplyform.validate_on_submit():
+        
+        new_message = FormMessage(
+            medicine_name=retailerreplyform.medicine_name.data,
+            user_name=retailerreplyform.user_name.data,
+            user_pincode=retailerreplyform.user_pincode.data,
+            user_city=retailerreplyform.user_city.data,
+            shop_name=retailerreplyform.shop_name.data,
+            location=retailerreplyform.address.data,
+            price=retailerreplyform.price.data,
+            msg_type ='reply'
+        )
+        
+        db.session.add(new_message)
+        db.session.commit()
+        return redirect(url_for('retail'))
+
+    messages = FormMessage.query.order_by(FormMessage.timestamp.asc()).all()
+
+    return render_template(
+        'retail.html',
+        user_data=get_current_user(),
+        feedback_form=feedback_form,
+        retailerreplyform=retailerreplyform,
+        messages=messages
+    )
+
+
+
+@app.route('/doc_or_user')
+def user_doc():
+    return render_template('user_or_doctor.html')
+
+
+
+@app.route('/appointment/<int:doctor_id>', methods=['GET', 'POST'])
+def appointment(doctor_id):
+    appointmentform = AppointmentForm()
+    appointmentform.doctorId.data = doctor_id
+
+    appointment = Appointment.query.filter_by(doctor_id=doctor_id).first()
+
+    # Define the time slot choices with both label update and disabling logic
+    appointmentform.time_slot.choices = [
+        ('slot1', '10:00-10:30am') if not appointment or not appointment.slot1 else ('slot1', '10:00-10:30am (Booked)'),
+        ('slot2', '10:30-11:00am') if not appointment or not appointment.slot2 else ('slot2', '10:30-11:00am (Booked)'),
+        ('slot3', '11:00-11:30am') if not appointment or not appointment.slot3 else ('slot3', '11:00-11:30am (Booked)'),
+        ('slot4', '11:30-12:00pm') if not appointment or not appointment.slot4 else ('slot4', '11:30-12:00pm (Booked)'),
+        ('slot5', '12:00-12:30pm') if not appointment or not appointment.slot5 else ('slot5', '12:00-12:30pm (Booked)'),
+        ('slot6', '12:30-1:00pm') if not appointment or not appointment.slot6 else ('slot6', '12:30-1:00pm (Booked)'),
+        ('slot7', '4:00-4:30pm') if not appointment or not appointment.slot7 else ('slot7', '4:00-4:30pm (Booked)'),
+        ('slot8', '4:30-5:00pm') if not appointment or not appointment.slot8 else ('slot8', '4:30-5:00pm (Booked)'),
+        ('slot9', '5:00-5:30pm') if not appointment or not appointment.slot9 else ('slot9', '5:00-5:30pm (Booked)'),
+        ('slot10', '5:30-6:00pm') if not appointment or not appointment.slot10 else ('slot10', '5:30-6:00pm (Booked)'),
+        ('slot11', '6:00-6:30pm') if not appointment or not appointment.slot11 else ('slot11', '6:00-6:30pm (Booked)'),
+        ('slot12', '6:30-7:00pm') if not appointment or not appointment.slot12 else ('slot12', '6:30-7:00pm (Booked)'),
+        ('slot13', '7:00-7:30pm') if not appointment or not appointment.slot13 else ('slot13', '7:00-7:30pm (Booked)'),
+        ('slot14', '7:30-8:00pm') if not appointment or not appointment.slot14 else ('slot14', '7:30-8:00pm (Booked)'),
+        ('slot15', '8:00-8:30pm') if not appointment or not appointment.slot15 else ('slot15', '8:00-8:30pm (Booked)'),
+        ('slot16', '8:30-9:00pm') if not appointment or not appointment.slot16 else ('slot16', '8:30-9:00pm (Booked)'),
+        ('slot17', '9:00-9:30pm') if not appointment or not appointment.slot17 else ('slot17', '9:00-9:30pm (Booked)'),
+        ('slot18', '9:30-10:00pm') if not appointment or not appointment.slot18 else ('slot18', '9:30-10:00pm (Booked)')
+    ]
+    # patient_id=User.query.filter_by(userid=get_current_user().id)
+    doctor = Doctor.query.filter_by(id=doctor_id).first()
+    doctor_mail=doctor.email_address
+    if appointmentform.validate_on_submit():
+        timeslot = appointmentform.time_slot.data
+        date = appointmentform.date.data
+        doctorId = appointmentform.doctorId.data
+        with app.app_context():
+            try:
+                result=update_value_in_row_and_column(Appointment, 'doctor_id', doctorId, timeslot, True)
+                print(result)
+                # Process the form data (e.g., save to the database)
+                print("Form Submitted:", timeslot, date, doctorId)
+                print(doctor_mail)
+                send_email(doctor_mail, "Appointment Fixed", "Ganduu")
+
+                return redirect(url_for('dashboard'))
+            except ValueError as e:
+                print(e)
+
+    doctor = Doctor.query.filter_by(id=doctor_id).first()
+
+    if doctor is None:
+        return "Doctor not found", 404
+
+    feedback_form = FeedbackForm()
+    if feedback_form.validate_on_submit():
+        reaction = request.form.get('reaction')  # Capture emoji reaction
+        feedback_text = feedback_form.feedback.data  # Capture feedback text
+
+        # Construct the email content
+        email_subject = f"Feedback from {get_current_user().username}"
+        email_body = f"""
+        From: {get_current_user().email_address}<br/>
+        Reaction: {reaction}<br/>
+        Feedback: {feedback_text}
+        """
+        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
+        print("Email sent successfully!")
+
+        return redirect(url_for('appointment', doctor_id=doctor.id))
+
+    return render_template(
+        'appointment.html',
+        user_data=get_current_user(),
+        appointmentform=appointmentform,
+        feedback_form=feedback_form,
+        doctor=doctor
+    )
+
+
+
+@app.route('/sign-in', methods=['GET','POST'])
+def login():
+    form=SignInForm()
+    if form.validate_on_submit():
+        with app.app_context():
+            attempted_user=User.query.filter_by(username=form.username.data).first()
+            if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
+                # login_user(attempted_user)
+                session['user_id']=attempted_user.id
+                flash(f'You have successfully logged in as : {attempted_user.username}' , category='success')
+                return redirect(url_for('dashboard'))
+            else:
+                flash(f'Username and password do not match ! Please try again', category='error')
+                flash(f'OTP does not match', category='error')
+
+    return render_template('signin.html',signin=form)
+
+@app.route('/sign-up', methods=['GET','POST'])
+def signup():
+    form=SignUpForm()
+    if form.validate_on_submit():
+        global user_details
+        user_details.append(form.username.data)
+        user_details.append(form.email_address.data)
+        user_details.append(form.password.data)
+        global otp
+        otp=random.randint(100000, 999999)
+        get_otp.append(otp)
+        send_email(form.email_address.data,"Medassis Verification", f"Welcome to Medassis !!!\n Your OTP for verification is {otp}. Please enter your OTP to create an account.")
+        return redirect(url_for('otp'))
+            
+        #else:
+           # flash(f"Wrong OTP eneted !!! Please enter it correctly", category='error')
+    if form.errors != {}:
+        for err_msg in form.errors.values():
+            flash(f'There was an error with creating a user: {err_msg}', category='error')
+
+    return render_template('signup.html',signup=form)
+
+
+@app.route('/doctor-sign-in', methods=['GET', 'POST'])
+def doctorlogin():
+    form = SignInForm()
+    if form.validate_on_submit():
+        with app.app_context():
+            attempted_user = Doctor.query.filter_by(username=form.username.data).first()
+            try:
+                if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
+                    session['doctor_id'] = attempted_user.id
+                    flash(f'You have successfully logged in as: {attempted_user.username}', category='success')
+                    return redirect(url_for('doctor_dashboard'))
+                else:
+                    flash('Username and password do not match! Please try again.', category='error')
+            except Exception as e:
+                flash(f'An error occurred: {str(e)}', category='error')
+                flash('OTP does not match', category='error')
+
+    return render_template('doctor_login.html', signin=form)
+
+
+
+@app.route('/doctor-sign-up', methods=['GET','POST'])
+def doctor_signup():
+    form=SignUpForm()
+    if form.validate_on_submit():
+        global user_details
+        user_details.append(form.username.data)
+        user_details.append(form.email_address.data)
+        user_details.append(form.password.data)
+        global otp
+        otp=random.randint(100000, 999999)
+        get_otp.append(otp)
+        send_email(form.email_address.data,"Medassis Verification", f"Welcome to Medassis !!!\n Your OTP for verification is {otp}. Please enter your OTP to create an account.")
+        return redirect(url_for('doctor_otp'))
+            
+        #else:
+           # flash(f"Wrong OTP eneted !!! Please enter it correctly", category='error')
+    if form.errors != {}:
+        for err_msg in form.errors.values():
+            flash(f'There was an error with creating a user: {err_msg}', category='error')
+
+    return render_template('doctor_signup.html',signup=form)
+
+@app.route('/logout')
+@login_required_user
+def logout():
+    print("Logout")
+    # logout_user()
+    session.pop('user_id', None)
+    return redirect(url_for('user_doc'))
+
+@app.route('/doctor-logout')
+@login_required_doctor
+def doctor_logout():
+    print("Logout")
+    # logout_user()
+    session.pop('doctor_id', None)
+    return redirect(url_for('user_doc'))
 
 @app.route('/otp', methods=['GET','POST'])
 def otp():
@@ -721,6 +944,11 @@ def doctor_otp():
                 # login_user(user_data)
                 session['doctor_id']=user_data.id
             
+            with app.app_context():
+                    appointment=Appointment(doctor_id=get_current_doctor().id)
+                    db.session.add(appointment)
+                    db.session.commit()
+            
             user_details.pop()
             user_details.pop()
             user_details.pop()
@@ -730,12 +958,13 @@ def doctor_otp():
     return render_template('doctor_otp.html',otpform=otpform)
 
 @app.route('/meeting')
+@login_required_doctor
 def meeting():
     room_id = request.args.get("roomID")
     if not room_id:
         room_id = generate_room_code()
     print(f"Room ID: {room_id}")
-    return render_template("meeting.html", user_data="username")
+    return render_template("meeting.html", user_data=get_current_doctor().username)
 
 
 @app.route('/join', methods=['GET', 'POST'])
@@ -747,7 +976,8 @@ def join():
         else:
             flash("Invalid room code. Please try again.")
             return redirect('/join')
-    return render_template('join.html', user_data="username")
+    return render_template('join.html')
+
 
 @app.route('/create_room', methods=['GET'])
 def create_room():
@@ -757,24 +987,16 @@ def create_room():
     return redirect('/join')
 
 
-# @app.route('/join', methods=['GET','POST'])
-# @login_required_user
-# def join():
-#     if request.method=="POST":
-#         room_id=request.form.get("roomID")
-#         return redirect(f"/meeting?roomID={room_id}")
-#     return render_template('join.html')
-
 @app.route('/diabetes-form', methods=['GET','POST'])
 def diabetes():
-    diabetesform=DiabetesForm()
+    diabetesform = DiabetesForm()
     if diabetesform.validate_on_submit():
-        username=diabetesform.username.data
+        username = diabetesform.username.data
         global name
         name.append(username)
-        gender=diabetesform.gender.data
-        age=diabetesform.age.data
-        address=diabetesform.address.data
+        gender = diabetesform.gender.data
+        age = diabetesform.age.data
+        address = diabetesform.address.data
         global pincode
         global email
         global phone
@@ -794,175 +1016,189 @@ def diabetes():
             flash("Username must be greater than 4 characters.", category='error')
         elif (age) >= 150:
             flash("Age value exceeded", category='error')
-        elif (height)>3:
+        elif (height) > 3:
             flash("Invalid Height Input.", category='error')
         elif (blood_glucose) > 700:
             flash("Invalid blood glucose level", category='error')
         else:
-            flash("Form Submited!", category='success')
-            if hypertension=="Yes":
-                hypertension_int=1
+            flash("Form Submitted!", category='success')
+            if hypertension == "Yes":
+                hypertension_int = 1
             else:
-                hypertension_int=0
-            
-            if previousHeartDisease=="Yes":
-                heart_disease=1
+                hypertension_int = 0
+
+            if previousHeartDisease == "Yes":
+                heart_disease = 1
             else:
-                heart_disease=0
+                heart_disease = 0
 
-            if gender=="Male":
-                gender_int=1
+            if gender == "Male":
+                gender_int = 1
             else:
-                gender_int=0
+                gender_int = 0
 
-            if smoking_History=="Other":
-                smk_curr=0
-                smk_ever=0
-                smk_former=0
-                smk_never=0
-                smk_nt_curr=0
+            if smoking_History == "Other":
+                smk_curr = 0
+                smk_ever = 0
+                smk_former = 0
+                smk_never = 0
+                smk_nt_curr = 0
 
-            elif smoking_History=="Current":
-                smk_curr=1
-                smk_ever=0
-                smk_former=0
-                smk_never=0
-                smk_nt_curr=0
+            elif smoking_History == "Current":
+                smk_curr = 1
+                smk_ever = 0
+                smk_former = 0
+                smk_never = 0
+                smk_nt_curr = 0
 
-            elif smoking_History=="Ever":
-                smk_curr=0
-                smk_ever=1
-                smk_former=0
-                smk_never=0
-                smk_nt_curr=0
-            
-            elif smoking_History=="Former":
-                smk_curr=0
-                smk_ever=0
-                smk_former=1
-                smk_never=0
-                smk_nt_curr=0
+            elif smoking_History == "Ever":
+                smk_curr = 0
+                smk_ever = 1
+                smk_former = 0
+                smk_never = 0
+                smk_nt_curr = 0
 
-            elif smoking_History=="Never":
-                smk_curr=0
-                smk_ever=0
-                smk_former=0
-                smk_never=1
-                smk_nt_curr=0
+            elif smoking_History == "Former":
+                smk_curr = 0
+                smk_ever = 0
+                smk_former = 1
+                smk_never = 0
+                smk_nt_curr = 0
 
-            else:
-                smk_curr=0
-                smk_ever=0
-                smk_former=0
-                smk_never=0
-                smk_nt_curr=1
-
-            bmi=weight/(height*height)
-            if bmi>34:
-                wgt_over=1
-                wgt_under=0
-            
-            elif bmi<14:
-                wgt_over=0
-                wgt_under=1
+            elif smoking_History == "Never":
+                smk_curr = 0
+                smk_ever = 0
+                smk_former = 0
+                smk_never = 1
+                smk_nt_curr = 0
 
             else:
-                wgt_over=0
-                wgt_under=0
+                smk_curr = 0
+                smk_ever = 0
+                smk_former = 0
+                smk_never = 0
+                smk_nt_curr = 1
 
-            if hba1clvl=="Below 3":
-                hba1c_4=0
-                hba1c_5=0
-                hba1c_6=0
-                hba1c_7=0
-                hba1c_8=0
-                hba1c_9=0
+            bmi = weight / (height * height)
+            if bmi > 34:
+                wgt_over = 1
+                wgt_under = 0
 
-            elif hba1clvl=="3-4":
-                hba1c_4=1
-                hba1c_5=0
-                hba1c_6=0
-                hba1c_7=0
-                hba1c_8=0
-                hba1c_9=0
-
-            elif hba1clvl=="4-5":
-                hba1c_4=0
-                hba1c_5=1
-                hba1c_6=0
-                hba1c_7=0
-                hba1c_8=0
-                hba1c_9=0
-
-            elif hba1clvl=="5-6":
-                hba1c_4=0
-                hba1c_5=0
-                hba1c_6=1
-                hba1c_7=0
-                hba1c_8=0
-                hba1c_9=0
-
-            elif hba1clvl=="6-7":
-                hba1c_4=0
-                hba1c_5=0
-                hba1c_6=0
-                hba1c_7=1
-                hba1c_8=0
-                hba1c_9=0
-
-            elif hba1clvl=="7-8":
-                hba1c_4=0
-                hba1c_5=0
-                hba1c_6=0
-                hba1c_7=0
-                hba1c_8=1
-                hba1c_9=0
+            elif bmi < 14:
+                wgt_over = 0
+                wgt_under = 1
 
             else:
-                hba1c_4=0
-                hba1c_5=0
-                hba1c_6=0
-                hba1c_7=0
-                hba1c_8=0
-                hba1c_9=1
+                wgt_over = 0
+                wgt_under = 0
 
-            query = np.array([age,hypertension_int,heart_disease,blood_glucose,gender_int,smk_curr,smk_ever,smk_former,smk_never,smk_nt_curr,wgt_over,wgt_under,hba1c_4,hba1c_5,hba1c_6,hba1c_7,hba1c_8,hba1c_9])
+            if hba1clvl == "Below 3":
+                hba1c_4 = 0
+                hba1c_5 = 0
+                hba1c_6 = 0
+                hba1c_7 = 0
+                hba1c_8 = 0
+                hba1c_9 = 0
 
-            query = query.reshape(1,18)
-            input_trf=scaler.transform(query)
-            prediction=model.predict(input_trf)
+            elif hba1clvl == "3-4":
+                hba1c_4 = 1
+                hba1c_5 = 0
+                hba1c_6 = 0
+                hba1c_7 = 0
+                hba1c_8 = 0
+                hba1c_9 = 0
+
+            elif hba1clvl == "4-5":
+                hba1c_4 = 0
+                hba1c_5 = 1
+                hba1c_6 = 0
+                hba1c_7 = 0
+                hba1c_8 = 0
+                hba1c_9 = 0
+
+            elif hba1clvl == "5-6":
+                hba1c_4 = 0
+                hba1c_5 = 0
+                hba1c_6 = 1
+                hba1c_7 = 0
+                hba1c_8 = 0
+                hba1c_9 = 0
+
+            elif hba1clvl == "6-7":
+                hba1c_4 = 0
+                hba1c_5 = 0
+                hba1c_6 = 0
+                hba1c_7 = 1
+                hba1c_8 = 0
+                hba1c_9 = 0
+
+            elif hba1clvl == "7-8":
+                hba1c_4 = 0
+                hba1c_5 = 0
+                hba1c_6 = 0
+                hba1c_7 = 0
+                hba1c_8 = 1
+                hba1c_9 = 0
+
+            else:
+                hba1c_4 = 0
+                hba1c_5 = 0
+                hba1c_6 = 0
+                hba1c_7 = 0
+                hba1c_8 = 0
+                hba1c_9 = 1
+
+            query = np.array([age, hypertension_int, heart_disease, blood_glucose, gender_int, smk_curr, smk_ever, smk_former, smk_never, smk_nt_curr, wgt_over, wgt_under, hba1c_4, hba1c_5, hba1c_6, hba1c_7, hba1c_8, hba1c_9])
+            query = query.reshape(1, 18)
+            input_trf = scaler.transform(query)
+            prediction = model.predict(input_trf)
             global pred
-            pred=prediction
+            pred = prediction
 
             print(pred)
 
-            
             with app.app_context():
-                checkup_data=Checkup(age=age,
-                                    name=username,
-                                    gender=gender,
-                                    hypertension=hypertension,
-                                    heart_disease=previousHeartDisease,
-                                    smoking_history=smoking_History,
-                                    blood_glucose=blood_glucose,
-                                    weight=weight,
-                                    height=height,
-                                    hba1c=hba1clvl,
-                                    diabetes=pred,
-                                    patient_id=get_current_user().id)
+                checkup_data = Checkup(age=age,
+                                       name=username,
+                                       gender=gender,
+                                       hypertension=hypertension,
+                                       heart_disease=previousHeartDisease,
+                                       smoking_history=smoking_History,
+                                       blood_glucose=blood_glucose,
+                                       weight=weight,
+                                       height=height,
+                                       hba1c=hba1clvl,
+                                       diabetes=pred,
+                                       patient_id=get_current_user().id)
                 db.session.add(checkup_data)
                 db.session.commit()
-                
-            
-            if prediction[0]==0:
-                flash(f"Your chances of diabetes is low !!!", category="success")
-            else:
-                flash(f"Your cances of diabetes is high !!!", category="error")
 
-            send_email(email,"Medassis Report", f"Name : {username}\n Gender : {gender}\n Age : {age}\n Hypertension : {hypertension}\n Previous Heart Disease : {previousHeartDisease}\n Weight : {weight}\n Height : {height}\n HBA1C Level : {hba1clvl}\n Blood Glucose : {blood_glucose}\n Diabetes : {pred}\n")   
+            # Format the email content
+            if prediction[0] == 0:
+                result_message = "Your chances of diabetes are low."
+            else:
+                result_message = "Your chances of diabetes are high."
+
+            email_message = f"""
+            <html>
+            <body>
+                <h2>Diabetes Risk Assessment Report</h2>
+                <p><strong>Name:</strong> {username}</p>
+                <p><strong>Gender:</strong> {gender}</p>
+                <p><strong>Age:</strong> {age}</p>
+                <p><strong>Hypertension:</strong> {hypertension}</p>
+                <p><strong>Previous Heart Disease:</strong> {previousHeartDisease}</p>
+                <p><strong>Weight:</strong> {weight} kg</p>
+                <p><strong>Height:</strong> {height} m</p>
+                <p><strong>HBA1C Level:</strong> {hba1clvl}</p>
+                <p><strong>Blood Glucose:</strong> {blood_glucose} mg/dL</p>
+                <p><strong>Diabetes Risk:</strong> {result_message}</p>
+            </body>
+            </html>
+            """
+
+            send_email(email, "Medassis Report", email_message)
             return redirect(url_for('result_diabetes'))
-            
-        
     return render_template('diabetesform.html',form=diabetesform)
 
 @app.route('/result')
@@ -1386,7 +1622,7 @@ def x_ray():
 
 @app.route('/diabetesPlot')
 def index():
-    pio.templates.default="plotly"
+    pio.templates.default = "plotly"
     df = pd.read_csv('app/static/diabetes_prediction_dataset.csv')
 
     diabetes_data = df[df['diabetes'] == 1]
@@ -1512,7 +1748,7 @@ def index():
 
 @app.route('/kidneyplot')
 def index7():
-    pio.templates.default="plotly"
+    pio.templates.default = "plotly"
     df = pd.read_csv('app/static/kidneyData.csv')
     df_scatter = df.sample(n=250, random_state=42)
 
@@ -1621,10 +1857,9 @@ def live_data():
     fig_live.update_layout(width=700, height=700)
     return pio.to_html(fig_live, full_html=False)
 
-
 @app.route('/LiverPlot')
 def index8():
-    pio.templates.default="plotly"
+    pio.templates.default = "plotly"
     df=pd.read_csv('app/static/Indian Liver Patient Dataset (ILPD).csv')
     df_disease = df[df['Selector'] == 2].head(250)  
 
@@ -1703,10 +1938,35 @@ def index8():
                            db_graphJSON=db_graphJSON,
                            cluster_graphJSON=cluster_graphJSON)
 
+@app.route('/news',methods=['GET','POST'])
+def news():
+    feedback_form = FeedbackForm()
+
+    if feedback_form.validate_on_submit():
+        reaction = request.form.get('reaction')  # Capture emoji reaction
+        feedback_text = feedback_form.feedback.data  # Capture feedback text
+
+        # Construct the email content
+        email_subject = f"Feedback from {get_current_user().username}"
+        email_body = f"""
+        From: {get_current_user().email_address}<br/>
+        Reaction: {reaction}<br/>
+        Feedback: {feedback_text}
+        """
+        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
+        print("Email sent successfully!")
+
+        return redirect(url_for('news'))
+
+    return render_template('news.html', user_data=get_current_user(),feedback_form=feedback_form)
+
+
 @app.route('/reminder', methods=['GET','POST'])
 def reminder():
+    
     reminderform=ReminderForm()
     feedback_form = FeedbackForm()
+
     if feedback_form.validate_on_submit():
         reaction = request.form.get('reaction')  # Capture emoji reaction
         feedback_text = feedback_form.feedback.data  # Capture feedback text
@@ -1722,6 +1982,7 @@ def reminder():
         print("Email sent successfully!")
 
         return redirect(url_for('reminder'))
+    
     if reminderform.validate_on_submit():
         with app.app_context():
             email=Reminder(

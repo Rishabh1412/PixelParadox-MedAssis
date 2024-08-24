@@ -1,11 +1,8 @@
 from app import db, session
 from app import bcrypt
 from flask_login import UserMixin
-from datetime import datetime, timedelta
+from datetime import datetime,timedelta
 
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.query.get(int(user_id))
 
 class User(db.Model, UserMixin):
     id=db.Column(db.Integer(), primary_key=True)
@@ -41,9 +38,10 @@ class Doctor(db.Model, UserMixin):
     pincode=db.Column(db.Integer())
     gender=db.Column(db.String(length=50), nullable=True)
     age=db.Column(db.Integer())
-    availability=db.Column(db.String(), default=True)
+    availability=db.Column(db.String(), default="Yes")
     phone=db.Column(db.Integer(), nullable=True)
     city=db.Column(db.String(length=50), nullable=True)
+    slots=db.relationship('Appointment', backref="appointments", lazy=True)
 
     @property
     def password(self):
@@ -56,6 +54,44 @@ class Doctor(db.Model, UserMixin):
     def check_password_correction(self, attempted_password):
         return bcrypt.check_password_hash(self.password_hash, attempted_password)
     
+class Shop(db.Model, UserMixin):
+    id=db.Column(db.Integer(), primary_key=True)
+    owner_name=db.Column(db.String(length=30), nullable=False, unique=True)
+    email_address=db.Column(db.String(length=50), nullable=False, unique=True)
+    password_hash=db.Column(db.String(length=60), nullable=False)
+
+    @property
+    def password(self):
+        return self.password
+    
+    @password.setter
+    def password(self, plain_text_password):
+        self.password_hash=bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
+
+    def check_password_correction(self, attempted_password):
+        return bcrypt.check_password_hash(self.password_hash, attempted_password)
+
+class Appointment(db.Model):
+    id=db.Column(db.Integer(), primary_key=True)
+    slot1=db.Column(db.Boolean(), default=False)    #10-1030
+    slot2=db.Column(db.Boolean(), default=False)    #1030-11
+    slot3=db.Column(db.Boolean(), default=False)    
+    slot4=db.Column(db.Boolean(), default=False)    
+    slot5=db.Column(db.Boolean(), default=False)    #12-1230
+    slot6=db.Column(db.Boolean(), default=False)    #1230-1
+    slot7=db.Column(db.Boolean(), default=False)    #4-430
+    slot8=db.Column(db.Boolean(), default=False)    #430-5
+    slot9=db.Column(db.Boolean(), default=False)    #5-530
+    slot10=db.Column(db.Boolean(), default=False)   #530-6
+    slot11=db.Column(db.Boolean(), default=False)   #6-630
+    slot12=db.Column(db.Boolean(), default=False)   #630-7
+    slot13=db.Column(db.Boolean(), default=False)   #7-730
+    slot14=db.Column(db.Boolean(), default=False)   #730-8
+    slot15=db.Column(db.Boolean(), default=False)   #8-830
+    slot16=db.Column(db.Boolean(), default=False)   #830-9
+    slot17=db.Column(db.Boolean(), default=False)   #9-930
+    slot18=db.Column(db.Boolean(), default=False)   #930-10
+    doctor_id=db.Column(db.Integer(), db.ForeignKey('doctor.id'))
 
 class Checkup(db.Model):
     form_id=db.Column(db.Integer(), primary_key=True)
@@ -140,23 +176,6 @@ class Message(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     author = db.relationship('User', backref=db.backref('messages', lazy=True))
 
-class Shop(db.Model, UserMixin):
-    id=db.Column(db.Integer(), primary_key=True)
-    username=db.Column(db.String(length=30), nullable=False, unique=True)
-    email_address=db.Column(db.String(length=50), nullable=False, unique=True)
-    password_hash=db.Column(db.String(length=60), nullable=False)
-
-    @property
-    def password(self):
-        return self.password
-    
-    @password.setter
-    def password(self, plain_text_password):
-        self.password_hash=bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
-
-    def check_password_correction(self, attempted_password):
-        return bcrypt.check_password_hash(self.password_hash, attempted_password)
-    
 class FormMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     medicine_name = db.Column(db.String(120), nullable=False)
@@ -168,3 +187,4 @@ class FormMessage(db.Model):
     shop_name = db.Column(db.String(120), nullable=True)
     msg_type = db.Column(db.String(10),nullable=True)
     price=db.Column(db.Float(),nullable=True)
+

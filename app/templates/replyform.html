@@ -1,0 +1,46 @@
+<div class="modal fade" id="reply-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-white p-0 m-0 ">
+            <div class="modal-header">
+                <h1 class="modal-title text-dark fs-5 px-2 px-md-3" id="exampleModalLabel">Reply to Medicine Request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-dark ">
+                <form method="POST" class="row px-4">
+                    {{ retailerreplyform.hidden_tag() }}
+                    <div class="col-12 d-flex mb-3 flex-column">
+                        {{ retailerreplyform.user_name.label(class='fw-semibold') }}
+                        {{ retailerreplyform.user_name(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-12 d-flex mb-3 flex-column">
+                        {{ retailerreplyform.medicine_name.label(class='fw-semibold') }}
+                        {{ retailerreplyform.medicine_name(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ retailerreplyform.user_pincode.label(class='fw-semibold') }}
+                        {{ retailerreplyform.user_pincode(class='rounded py-2 px-2 border-0 w-100 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ retailerreplyform.user_city.label(class='fw-semibold') }}
+                        {{ retailerreplyform.user_city(class='rounded py-2 px-2 border-0 w-100 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-12 d-flex mb-3 flex-column">
+                        {{ retailerreplyform.address.label(class='fw-semibold') }}
+                        {{ retailerreplyform.address(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ retailerreplyform.shop_name.label(class='fw-semibold') }}
+                        {{ retailerreplyform.shop_name(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ retailerreplyform.price.label(class='fw-semibold') }}
+                        {{ retailerreplyform.price(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-12 my-3">
+                        {{ retailerreplyform.submit(class='rounded w-100 btn btn-dark px-4 py-2 rounded') }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

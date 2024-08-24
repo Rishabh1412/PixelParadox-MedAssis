@@ -2,98 +2,147 @@
 content %}
 {% include "feedback.html" %}
 <div style="height: 100vh; overflow-y: auto;">
-<div class="px-4 pt-3 pt-md-4 position-relative d-flex justify-content-between align-items-center mobhead">
-  <!-- <div class="d-flex justify-content-between postion-fixed pt-5 pt-md-0"> -->
+  <div class="px-4 pt-3 pt-md-4 position-relative d-flex justify-content-between align-items-center mobhead">
+    <!-- <div class="d-flex justify-content-between postion-fixed pt-5 pt-md-0"> -->
 
-  <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">Dashboard</h4>
+    <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">Dashboard</h4>
 
-  <a href="{{ url_for('logout') }}"><button class="logout me-5 me-md-0 shadow postion-fixed">
-      Log Out <i class="fa-solid fa-right-from-bracket"></i>
-    </button>
-  </a>
-  <i class="fa-solid fa-bars d-md-none me-2 d-flex position-fixed menu-button shadow" onclick="togglesidebar()"></i>
-</div>
-<div class="p-4 pt-2 pt-md-0 ">
+    <a href="{{ url_for('logout') }}"><button class="logout me-5 me-md-0 shadow postion-fixed">
+        Log Out <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </a>
+    <i class="fa-solid fa-bars d-md-none me-2 d-flex position-fixed menu-button shadow" onclick="togglesidebar()"></i>
+  </div>
+  <div class="p-4 pt-2 pt-md-0 ">
 
-  <h5 class=" ps-md-2 fs-5 fs-md-5 pt-1 fw-semibold">Services</h4>
+    <h5 class=" ps-md-2 fs-5 fs-md-5 pt-1 fw-semibold">Services</h4>
 
-    <div class="row gap-3 mt-2 px-2">
-      <div class="col-md dash-cardone diabetes position-relative col px-4 py-3">
-        <a href="{{ url_for('diabetes') }}" style="text-decoration: none; color:black">
-          <p>Checkup</p>
-          <h3 class="fw-semibold">Diabetes Checkup</h3>
-          <p>
-            <span style="color: #00c700"><i class="fa-regular fa-circle"></i> Diabetes Predictor</span>
-          </p>
-        </a>
-      </div>
-
-      <div class="col-md dash-cardone kidney col px-4 py-3">
-        <a href="{{ url_for('kidney') }}" style="text-decoration: none; color:black">
-          <p>Checkup</p>
-          <h3 class="fw-semibold">Kidney Checkup</h3>
-          <p>
-            <span style="color: #00c700"><i class="fa-regular fa-circle"></i>&nbsp;Kidney Diasease Predictor</span>
-          </p>
-        </a>
-      </div>
-      <div class="col-md dash-cardone liver col px-4 py-3">
-        <a href="{{ url_for('liver') }}" style="text-decoration: none; color:black">
-          <p>Checkup</p>
-          <h3 class="fw-semibold">Liver Checkup</h3>
-          <p>
-            <span style="color: #00c700"><i class="fa-regular fa-circle"></i>&nbsp;Liver Diasease Predictor</span>
-          </p>
-        </a>
-      </div>
-
-
-    </div>
-    <div class="row gap-0 mt-4">
-      <div class="col-12 col-md-8  px-2 ">
-        <a href="{{ url_for('x_ray') }}" style="text-decoration: none; color:black">
-          <div class="col-md dash-cardone pneumonia col px-4 py-3">
+      <div class="row gap-3 mt-2 px-2">
+        <div class="col-md dash-cardone diabetes position-relative col px-4 py-3">
+          <a href="{{ url_for('diabetes') }}" style="text-decoration: none; color:black">
             <p>Checkup</p>
-            <h3 class="fw-semibold">Pneumonia Checkup</h3>
+            <h3 class="fw-semibold">Diabetes Checkup</h3>
             <p>
-              <span style="color: #00c700"><i class="fa-regular fa-circle"></i>&nbsp;Pneumonia Predictor</span>
+              <span style="color: #00c700"><i class="fa-regular fa-circle"></i> Diabetes Predictor</span>
             </p>
-        </a>
+          </a>
+        </div>
+
+        <div class="col-md dash-cardone kidney col px-4 py-3">
+          <a href="{{ url_for('kidney') }}" style="text-decoration: none; color:black">
+            <p>Checkup</p>
+            <h3 class="fw-semibold">Kidney Checkup</h3>
+            <p>
+              <span style="color: #00c700"><i class="fa-regular fa-circle"></i>&nbsp;Kidney Diasease Predictor</span>
+            </p>
+          </a>
+        </div>
+        <div class="col-md dash-cardone liver col px-4 py-3">
+          <a href="{{ url_for('liver') }}" style="text-decoration: none; color:black">
+            <p>Checkup</p>
+            <h3 class="fw-semibold">Liver Checkup</h3>
+            <p>
+              <span style="color: #00c700"><i class="fa-regular fa-circle"></i>&nbsp;Liver Diasease Predictor</span>
+            </p>
+          </a>
+        </div>
+
+
       </div>
-      <div class="col-12 col-md-6">
-        <h5 class=" fs-5 fs-md-5 pt-5 pb-2 fw-semibold row">Diet Chart Generator</h5>
-
-        <button class='button-diet-generator col-12' type="button" data-bs-toggle="modal"
-          data-bs-target="#diet-modal">
-          <span class="text">Generate Diet Chart</span>
-        </button>
-      </div>
-
-
-
-    </div>
-    
-       
-
-       
-
-
-        
-
-        
-      
       <div class="row gap-0 mt-4">
         <div class="col-12 col-md-8  px-2 ">
-          <a href="{{ url_for('join') }}" style="text-decoration: none; color:black">
+          <a href="{{ url_for('x_ray') }}" style="text-decoration: none; color:black">
             <div class="col-md dash-cardone pneumonia col px-4 py-3">
               <p>Checkup</p>
-              <h3 class="fw-semibold">JOIN APPOINTMENT</h3>
+              <h3 class="fw-semibold">Pneumonia Checkup</h3>
               <p>
-                <span style="color: #00c700"><i class="fa-regular fa-circle"></i>&nbsp;Pneumonia
-                  Predictor</span>
+                <span style="color: #00c700"><i class="fa-regular fa-circle"></i>&nbsp;Pneumonia Predictor</span>
               </p>
           </a>
         </div>
+
+
+
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-12">
+          <h5 class=" ps-md-4 fs-5 fs-md-5 pt-5 pb-2 fw-semibold">Med-wise</h5>
+          <div class="row px-4">
+
+            <button class='button-my-ai-new col-4 mx-2 my-2 my-md-0' type="button" data-bs-toggle="modal"
+              data-bs-target="#food-modal"> Food Analysis
+            </button>
+            <button class="col-4  mx-2 button-my-ai-new2 my-2 my-md-0" type="button" data-bs-toggle="modal"
+              data-bs-target="#medicine-modal">Medicine
+              Analysis</button>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <h5 class=" fs-5 fs-md-5 pt-5 pb-2 fw-semibold row">Diet Chart Generator</h5>
+
+          <button class='button-diet-generator col-12' type="button" data-bs-toggle="modal"
+            data-bs-target="#diet-modal">
+            <span class="text">Generate Diet Chart</span>
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6 ">
+          <h5 class=" ps-md-4 fs-5 fs-md-5 pt-5 pb-2 fw-semibold">MedAssistant</h5>
+
+          <button type="button" class="btn-talk-to-ai ms-4" type="button" data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop">
+            <strong>Assistant</strong>
+            <div id="container-stars">
+              <div id="stars"></div>
+            </div>
+
+            <div id="glow">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+          </button>
+        </div>
+        <div class="col-12 col-md-6">
+          <h5 class="fs-5 fs-md-5 pt-5 pb-2 fw-semibold">Doctor Search</h5>
+          <button class="button-diet-generator col-12" id="" type="button" data-bs-toggle="modal" data-bs-target="#doc-modal">
+            <span class="text">Doctor Portal</span>
+          </button>
+        </div>
+      </div>
+
+  </div>
+
+  <div class="modal fade" id="doc-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-white">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Appoint Doctor</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body px-3">
+          <input type="text" name="doctorname" class="w-100 px-2 px-md-3 py-2 rounded-pill bg-body-tertiary border-0"
+            placeholder="Seacrh the doctor...." />
+          <div class="h-100 text-dark px-3 mt-2" style="overflow-y: auto;">
+            {% for doctor in doctors %}
+            <a href="{{ url_for('appointment', doctor_id=doctor.id) }}" class="text-decoration-none text-dark">
+              <li class="d-flex py-3 px-3 rounded doctor-list justify-content-between" data-doctor-id="{{ doctor.id }}">
+                <div>
+                  <i class="fa-solid pe-2 fa-user-doctor"></i>{{ doctor.username }}
+                </div>
+                <span class="badge d-flex align-items-center text-bg-dark">{{ doctor.specialization }}</span>
+              </li>
+            </a>
+            <hr class="text-secondary p-0 m-0" />
+            {% endfor %}
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  
 
 
 </div>

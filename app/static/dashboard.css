@@ -511,6 +511,88 @@
     }
 }
 
+.doctor-list{
+    transition: 200ms all cubic-bezier(0.19, 1, 0.22, 1);
+}
+.doctor-list:hover{
+    background: rgb(171, 255, 193);
+}
+
+/* From Uiverse.io by xueyuantan */
+.button-my-ai-new {
+    width: 10em;
+    height: 4em;
+    border-radius:20px;
+    font-size: 18px;
+    font-family: inherit;
+    background: white;
+    /* padding: 20px ; */
+    /* border: #16471681 1px solid; */
+    border:none;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 6px 6px 12px #c5c5c5,
+        -6px -6px 12px #ffffff;
+}
+
+.button-my-ai-new::before {
+    content: '';
+    width: 0;
+    height: 4em;
+    border-radius: 10px;
+    position: absolute;
+    border: none;
+    top: 0;
+    left: 0;
+    background-image: linear-gradient(to right, #0fd850 0%, #f9f047 100%);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+.button-my-ai-new:hover::before {
+    width: 10em;
+    border: none;
+}
+
+.button-my-ai-new2 {
+    width: 12em;
+    height: 4em;
+    border-radius: 20px;
+    font-size: 18px;
+    font-family: inherit;
+    background: white;
+    /* padding: 20px ; */
+    /* border: #16471681 1px solid; */
+    border: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 6px 6px 12px #c5c5c5,
+        -6px -6px 12px #ffffff;
+}
+
+.button-my-ai-new2::before {
+    content: '';
+    width: 0;
+    height: 4em;
+    border-radius: 10px;
+    position: absolute;
+    border: none;
+    top: 0;
+    left: 0;
+    background-image: linear-gradient(to right, #0fd850 0%, #f9f047 100%);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+.button-my-ai-new2:hover::before {
+    width: 12em;
+    border: none;
+}
+
+
 .button-diet-generator {
     align-items: center;
     background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
@@ -559,4 +641,181 @@
 
 .button-diet-generator:active {
     transform: scale(0.9);
+}
+
+/* From Uiverse.io by StealthWorm */
+.btn-talk-to-ai {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 13rem;
+    overflow: hidden;
+    height: 3rem;
+    background-size: 300% 300%;
+    cursor: pointer;
+    backdrop-filter: blur(1rem);
+    border-radius: 5rem;
+    transition: 0.5s;
+    animation: gradient_301 5s ease infinite;
+    border: double 4px transparent;
+    background-image: linear-gradient(#f5f5f5, #f5f5f5),
+        linear-gradient(137.48deg,
+            #ffdb3b 10%,
+            #10ad1d 45%,
+            #11f124 67%,
+            #ffffff 87%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+}
+
+#container-stars {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transition: 0.5s;
+    backdrop-filter: blur(1rem);
+    border-radius: 5rem;
+}
+
+strong {
+    z-index: 2;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: #050505;
+    text-shadow: 0 0 4px white;
+}
+
+#glow {
+    position: absolute;
+    display: flex;
+    width: 12rem;
+}
+
+.circle {
+    width: 100%;
+    height: 30px;
+    filter: blur(2rem);
+    animation: pulse_3011 4s infinite;
+    z-index: -1;
+}
+
+.circle:nth-of-type(1) {
+    background: #fff;
+}
+
+.circle:nth-of-type(2) {
+    background: #fff;
+}
+
+.btn-talk-to-ai:hover #container-stars {
+    z-index: 1;
+    background-color: #fff;
+    color: black;
+}
+
+.btn-talk-to-ai:hover {
+    transform: scale(1.1);
+}
+
+.btn-talk-to-ai:active {
+    border: double 4px #fe53bb;
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    animation: none;
+}
+
+.btn-talk-to-ai:active .circle {
+    background: #fe53bb;
+}
+
+#stars {
+    position: relative;
+    background: transparent;
+    width: 200rem;
+    height: 200rem;
+}
+
+#stars::after {
+    content: "";
+    position: absolute;
+    top: -10rem;
+    left: -100rem;
+    width: 100%;
+    height: 100%;
+    animation: animStarRotate 90s linear infinite;
+}
+
+#stars::after {
+    background-image: radial-gradient(#000 1px, transparent 1%);
+    background-size: 50px 50px;
+}
+
+#stars::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 170%;
+    height: 500%;
+    animation: animStar 60s linear infinite;
+}
+
+#stars::before {
+    background-image: radial-gradient(#000 1px, transparent 1%);
+    background-size: 50px 50px;
+    opacity: 0.5;
+}
+
+@keyframes animStar {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-135rem);
+    }
+}
+
+@keyframes animStarRotate {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0);
+    }
+}
+
+@keyframes gradient_301 {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes pulse_3011 {
+    0% {
+        transform: scale(0.75);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(0.75);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
 }
