@@ -48,3 +48,20 @@ class UserProfileForm(FlaskForm):
     phone = IntegerField('Phone', validators=[Optional()])
     city = StringField("City", validators=[Optional()])
     submit = SubmitField('Update Profile')
+
+class DiabetesForm(FlaskForm):
+
+    username=StringField('Name',validators=[DataRequired(),Length(max=100)])
+    gender=RadioField('Gender',validators=[DataRequired()],choices=['Male','Female'])
+    age=IntegerField('Age',validators=[DataRequired()])
+    address=StringField('Address',validators=[DataRequired(),Length(max=250)])
+    pincode=IntegerField('Pincode',validators=[DataRequired()])
+    hypertension=RadioField('Hypertension',validators=[DataRequired()],choices=['Yes','No'])
+    previousHeartDisease=RadioField('Previous Heart Disease',validators=[DataRequired()],choices=['Yes','No'])
+    smoking_History=SelectField("Smoking History",validators=[DataRequired()],choices=[('never','Never'),('former','Former'),('current','Current'),('notcurrent','Not Current'),('ever','Ever'),('other','Other')])
+    weight=DecimalField("Weight (in kg)",validators=[DataRequired()],places=2)
+    height=DecimalField("Height (in m)",validators=[DataRequired()],places=2)
+    hba1clvl=SelectField("HbA1c Level",validate_choice=[DataRequired()],choices=[('Below 3','below 3'),('3-4','3-4'),('4-5','4-5'),('5-6','5-6'),('6-7','6-7'),('7-8','7-8'),('8-9','8-9'),('Above 9','above 9')])
+    blood_glucose=IntegerField('Blood Glucose Level',validators=[DataRequired()])
+    phone=IntegerField('Phone Number',validators=[DataRequired()])
+    submit=SubmitField('Submit')
