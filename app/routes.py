@@ -1,7 +1,7 @@
 from app import app,db, session
 from flask import render_template, redirect, url_for, flash, request, jsonify
-from app.forms import OtpForm, SignInForm, SignUpForm, UserProfileForm, DiabetesForm
-from app.models import User, Checkup
+from app.forms import OtpForm, SignInForm, SignUpForm, UserProfileForm, DiabetesForm, KidneyForm
+from app.models import User, Checkup, Kidney
 import random
 import pickle
 from app.mails import send_email
@@ -16,6 +16,8 @@ import plotly.graph_objs as go
 
 model = pickle.load(open('./app/static/model.pkl', 'rb'))
 scaler = pickle.load(open('./app/static/scaler.pkl', 'rb'))
+kidney_model=pickle.load(open('app/static/Kidney_model.pkl', 'rb'))
+kidney_scaler=pickle.load(open('app/static/Scaling_kidney.pkl', 'rb'))
 
 user_details=[]
 get_otp=[]
@@ -24,6 +26,7 @@ pincode=0
 email=""
 pred=0
 name=[]
+user=[]
 
 
 def get_current_user():
@@ -345,6 +348,221 @@ def diabetes():
             send_email(email, "Medassis Report", email_message)
             return redirect(url_for('result_diabetes'))
     return render_template("diabetesform.html",form=diabetesform)
+
+@app.route('/kidney-form', methods=['GET','POST'])
+@login_required_user
+def kidney():
+    kidneyform=KidneyForm()
+    if kidneyform.validate_on_submit():
+        name = kidneyform.username.data
+        gender = kidneyform.gender.data
+        height = kidneyform.height.data
+        weight = kidneyform.weight.data
+        smoke_alco = kidneyform.smoke_alco.data
+        age = kidneyform.age.data
+        physical_activity = kidneyform.physical_activity.data
+        kidney_diet_score = kidneyform.kidney_diet_score.data
+        fhkd = kidneyform.fhkd.data
+        fhh = kidneyform.fhh.data
+        fhd = kidneyform.fhd.data
+        urinary_tract = kidneyform.urinary_tract.data
+        systolic_bp = kidneyform.systoyic_bp.data
+        diastolic_bp = kidneyform.diastotic_bp.data
+        fasting_blood_sugar = kidneyform.fasting_blood_sugar.data
+        hba1clvl = kidneyform.hba1clvl.data
+        serum_creative = kidneyform.serum_creative.data
+        bunlvl = kidneyform.bunlvl.data
+        gfr = kidneyform.gfr.data
+        protein_in_urine = kidneyform.protein_in_urine.data
+        serum_electrolyes_sodium = kidneyform.serum_electrolyes_sodium.data
+        serum_electrolyes_potassium = kidneyform.serum_electrolyes_potassium.data
+        haemoglobin_lvl = kidneyform.haemoglobin_lvl.data
+        cholestrol_lvl = kidneyform.cholestrol_lvl.data
+        diuretics = kidneyform.diuretics.data
+        edema = kidneyform.edema.data
+        muscle = kidneyform.muscle.data
+        itching = kidneyform.itching.data
+
+        global user
+        user.append(name)
+        weight=float(weight)
+        height=float(height)
+        fasting_blood_sugar=float(fasting_blood_sugar)
+        if gender=="Male":
+            gender_val=1
+        else:
+            gender_val=0
+        if physical_activity>=2:
+            phy_val=1
+        else:
+            phy_val=0
+        if smoke_alco=="Smoking" or smoke_alco=="Alcohol":
+            smok_val=1
+        elif smoke_alco=="Both":
+            smok_val=2
+        elif smoke_alco=="None":
+            smok_val=0
+
+        if kidney_diet_score>=5:
+            kidney_val=1
+        else:
+            kidney_val=0
+
+        if urinary_tract=="Yes":
+            urinary_val=1
+        else:
+            urinary_val=0
+
+        genetics_val=0
+        genetics=[fhkd, fhh, fhd]
+        for i in genetics:
+            if i=="Yes":
+                genetics_val+=1
+
+        if serum_electrolyes_sodium>=139:
+            serum_sodium_val=1
+        else:
+            serum_sodium_val=0
+
+        if serum_electrolyes_potassium>=4.05:
+            serum_potassium_val=1
+        else:
+            serum_potassium_val=0
+        
+        if diuretics=="Yes":
+            diuretics_val=1
+        else:
+            diuretics_val=0
+        
+        if edema=="Yes":
+            edema_val=1
+        else:
+            edema_val=0
+        
+        if muscle=="low":
+            muscle_low=1
+            muscle_moderate=0
+        elif muscle=="moderate":
+            muscle_low=0
+            muscle_moderate=1
+        else:
+            muscle_low=0
+            muscle_moderate=0
+
+        if itching=="low":
+            itching_low=1
+            itching_moderate=0
+        elif itching=="moderate":
+            itching_low=0
+            itching_moderate=1
+        else:
+            itching_low=0
+            itching_moderate=0
+
+        if age<=30:
+            age_mid=0
+            age_sen=0
+        elif age>30 and age<=60:
+            age_mid=1
+            age_sen=0
+        else:
+            age_mid=0
+            age_sen=1
+
+        bmi=weight/(height*height)
+        if bmi>=34.05:
+            obesity=1
+            overwgt=0
+            underwgt=0
+        elif bmi<34.05 and bmi>=27.65:
+            obesity=0
+            overwgt=1
+            underwgt=0
+        elif bmi<27.65 and bmi>=12:
+            obesity=0
+            overwgt=0
+            underwgt=0
+        else:
+            obesity=0
+            overwgt=0
+            underwgt=1
+        
+
+        query = np.array([gender_val, phy_val, smok_val, kidney_val, urinary_val, systolic_bp, diastolic_bp, fasting_blood_sugar, hba1clvl, serum_creative, bunlvl, gfr, protein_in_urine, genetics_val, serum_sodium_val, serum_potassium_val, haemoglobin_lvl, cholestrol_lvl, diuretics_val, edema_val, muscle_low, muscle_moderate, itching_low, itching_moderate, age_mid, age_sen, obesity, overwgt, underwgt])
+        query = query.reshape(1,29)
+        input_trf=kidney_scaler.transform(query)
+        kidney_per=kidney_model.predict(input_trf)
+        global pred
+        pred=kidney_per
+        print(pred)
+
+
+        with app.app_context():
+            checkup_data=Kidney(
+                            name=name,
+                            age=age,
+                            gender=gender,
+                            height=height,
+                            weight=weight,
+                            smok_alc=smoke_alco,
+                            physical_act=physical_activity,
+                            kidney_diet=kidney_diet_score,
+                            fhkd=fhkd,
+                            fhh=fhh,
+                            fhd=fhd,
+                            urinary=urinary_tract,
+                            systolic_bp=systolic_bp,
+                            diastolic_bp=diastolic_bp,
+                            blood_sugar=fasting_blood_sugar,
+                            hba1c=hba1clvl,
+                            serum=serum_creative,
+                            bun_lvl=bunlvl,
+                            gfr=gfr,
+                            protein_urine=protein_in_urine,
+                            sodium_electrolyte=serum_electrolyes_sodium,
+                            potassium_electrolyte=serum_electrolyes_potassium,
+                            hemoglobin=haemoglobin_lvl,
+                            cholesterol=cholestrol_lvl,
+                            diuretics=diuretics,
+                            edema=edema,
+                            muscle_cramps=muscle,
+                            itching=itching,
+                            kidney_per=pred,
+                            )
+            
+            db.session.add(checkup_data)
+            db.session.commit()
+
+        email_message = f"""
+            <html>
+            <body>
+                <h2>Diabetes Risk Assessment Report</h2>
+                <p><strong>Name:</strong> {name}</p>
+                <p><strong>Gender:</strong> {gender}</p>
+                <p><strong>Age:</strong> {age}</p>
+                <p><strong>Height:</strong> {height} m</p>
+                <p><strong>HBA1C Level:</strong> {hba1clvl}</p>
+                <p><strong>Diabetes Risk:</strong> {pred[0][0]*100} %</p>
+            </body>
+            </html>
+            """
+        
+        send_email(get_current_user().email_address,"Medassis Report", email_message)
+        return redirect(url_for('result_kidney'))
+            
+                
+        
+
+    return render_template('kidney.html',kidneyform=kidneyform)
+
+@app.route('/result-kidney')
+@login_required_user
+def result_kidney():
+    global pred
+    with app.app_context():
+        user_data=Kidney.query.filter_by(name=user[0]).order_by(Kidney.form_id.desc()).first()
+    user.pop()
+    return render_template('result_kidney.html', user_data=user_data, current_user=get_current_user(), pred=pred)
 
 @app.route('/diabetesPlot')
 def index():
