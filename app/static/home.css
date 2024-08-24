@@ -1,0 +1,65 @@
+  .nav-button {
+    padding: 12px 25px;
+    background: transparent;
+    border: 1px whitesmoke solid;
+  }
+
+  .portrait-card {
+    background:#00ffee34 ;
+    backdrop-filter: blur(10px);
+    border-radius: 40px;
+    width: 350px;
+    height: 550px;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .moto {
+    font-size: 80px;
+  }
+
+  .motodiv {
+    display: flex;
+    justify-content: right;
+  }
+
+  .bottom-card {
+    border-radius: 40px;
+    height: 230px;
+    margin-top: 20px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    background:#00fff247 
+  }
+
+  .content-container {
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .main-content {
+    width: 100%;
+    
+    /* max-width: 1200px; */
+  }
+  .content{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+   .content-in{
+    display: flex;
+    /* align-items: center;i */
+    justify-content: space-between;
+  }
+  .back-ground{
+    background-image: url(../static/assests/pikaso_texttoimage_modern-website-background-with-dark-colours.jpeg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+  
