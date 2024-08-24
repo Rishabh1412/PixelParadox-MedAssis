@@ -7,6 +7,12 @@ import pickle
 from app.mails import send_email
 from functools import wraps
 import numpy as np
+import pandas as pd
+import plotly.io as pio
+import plotly.express as px
+import json
+import plotly
+import plotly.graph_objs as go
 
 model = pickle.load(open('./app/static/model.pkl', 'rb'))
 scaler = pickle.load(open('./app/static/scaler.pkl', 'rb'))
@@ -339,6 +345,132 @@ def diabetes():
             send_email(email, "Medassis Report", email_message)
             return redirect(url_for('result_diabetes'))
     return render_template("diabetesform.html",form=diabetesform)
+
+@app.route('/diabetesPlot')
+def index():
+    pio.templates.default = "plotly"
+    df = pd.read_csv('app/static/diabetes_prediction_dataset.csv')
+
+    diabetes_data = df[df['diabetes'] == 1]
+    diabetes_sample = diabetes_data.sample(n=200, random_state=42)
+    colors = diabetes_sample['smoking_history'].apply(lambda x: 'green' if x == 'never' else 'red')
+    bubble_fig = px.scatter_3d(
+        diabetes_sample, x='age', y='HbA1c_level', z='blood_glucose_level',
+        color=colors, size='blood_glucose_level', opacity=0.6,
+        color_discrete_map={'green': 'green', 'red': 'red'}
+    )
+    bubble_fig.update_layout(
+        title='3D Bubble Plot of Blood Glucose Levels by Age and HbA1c Level with Smoking History for Diabetic Patients',
+        scene=dict(
+            xaxis_title='Age',
+            yaxis_title='HbA1c Level',
+            zaxis_title='Blood Glucose Level'
+        ),
+        legend_title='Smoking History',
+        width=1000,
+        height=800
+    )
+    bubble_graphJSON = json.dumps(bubble_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    # Generate Histogram
+    age_bins = np.arange(0, diabetes_data['age'].max() + 5, 5)
+    histogram_fig = px.histogram(diabetes_data, x='age', color='gender', 
+                                 title='Histogram of Age by Gender for Diabetic Patients',
+                                 labels={'age': 'Age Groups', 'count': 'Frequency of Diabetes'},
+                                 nbins=len(age_bins))
+    histogram_fig.update_layout(
+        bargap=0.1,
+        bargroupgap=0.2,
+        width=800,
+        height=600
+    )
+    histogram_graphJSON = json.dumps(histogram_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    # Generate 3D Scatter Plot
+    diabetes_data_sample = df[df['diabetes'] == 1].sample(n=250, random_state=42)
+    non_diabetes_data_sample = df[df['diabetes'] == 0].sample(n=250, random_state=42)
+    combined_data = pd.concat([diabetes_data_sample, non_diabetes_data_sample])
+    scatter_fig = px.scatter_3d(
+        combined_data, x='age', y='bmi', z='HbA1c_level',
+        color=np.where(combined_data['diabetes'] == 1, 'Diabetes', 'Non-Diabetes'),
+        symbol=np.where(combined_data['diabetes'] == 1, 'Diabetes', 'Non-Diabetes'),
+        opacity=0.7,
+        size_max=20,
+        labels={'age': 'Age', 'bmi': 'BMI', 'HbA1c_level': 'HbA1c Level'},
+        title='Scatter Plot of Age vs BMI vs HbA1c Level with Diabetes Status'
+    )
+    scatter_fig.update_traces(marker=dict(color='red'), selector=dict(type='scatter3d', name='Diabetes'))
+    scatter_fig.update_traces(marker=dict(color='blue'), selector=dict(type='scatter3d', name='Non-Diabetes'))
+    scatter_fig.update_layout(
+        scene=dict(xaxis_title='Age', yaxis_title='BMI', zaxis_title='HbA1c Level'),
+        height=800
+    )
+    scatter_graphJSON = json.dumps(scatter_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    # Generate 3D Mesh Plot
+    diabetes_data = df[df['diabetes'] == 1].head(1000)
+    bmi = diabetes_data['bmi']
+    age = diabetes_data['age']
+    hbA1c = diabetes_data['HbA1c_level']
+    mesh_fig = go.Figure(data=[go.Mesh3d(x=bmi, y=age, z=hbA1c, opacity=0.5)])
+    mesh_fig.update_layout(
+        title='3D Mesh Plot of BMI, Age, and HbA1c Level for People with Diabetes',
+        scene=dict(
+            xaxis_title='BMI',
+            yaxis_title='Age',
+            zaxis_title='HbA1c Level'
+        ),
+        width=1200,
+        height=800
+    )
+    mesh_graphJSON = json.dumps(mesh_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    # Generate Pie Charts
+    diabetes_counts = {
+        'Smoking History': diabetes_data['smoking_history'].value_counts(),
+        'Heart Disease': diabetes_data['heart_disease'].value_counts()
+    }
+    non_diabetes_counts = {
+        'Smoking History': df[df['diabetes'] == 0]['smoking_history'].value_counts(),
+        'Heart Disease': df[df['diabetes'] == 0]['heart_disease'].value_counts()
+    }
+
+    pie_fig_diabetes_smoking = go.Figure(data=[go.Pie(
+        labels=diabetes_counts['Smoking History'].index, 
+        values=diabetes_counts['Smoking History'].values,
+        name='Smoking History - Diabetes'
+    )])
+    pie_fig_diabetes_heart = go.Figure(data=[go.Pie(
+        labels=diabetes_counts['Heart Disease'].index, 
+        values=diabetes_counts['Heart Disease'].values,
+        name='Heart Disease - Diabetes'
+    )])
+    pie_fig_non_diabetes_smoking = go.Figure(data=[go.Pie(
+        labels=non_diabetes_counts['Smoking History'].index, 
+        values=non_diabetes_counts['Smoking History'].values,
+        name='Smoking History - Non-Diabetes'
+    )])
+    pie_fig_non_diabetes_heart = go.Figure(data=[go.Pie(
+        labels=non_diabetes_counts['Heart Disease'].index, 
+        values=non_diabetes_counts['Heart Disease'].values,
+        name='Heart Disease - Non-Diabetes'
+    )])
+
+    pie_graphJSON_diabetes_smoking = json.dumps(pie_fig_diabetes_smoking, cls=plotly.utils.PlotlyJSONEncoder)
+    pie_graphJSON_diabetes_heart = json.dumps(pie_fig_diabetes_heart, cls=plotly.utils.PlotlyJSONEncoder)
+    pie_graphJSON_non_diabetes_smoking = json.dumps(pie_fig_non_diabetes_smoking, cls=plotly.utils.PlotlyJSONEncoder)
+    pie_graphJSON_non_diabetes_heart = json.dumps(pie_fig_non_diabetes_heart, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return render_template('index13.html', 
+                           bubble_plot=bubble_graphJSON,
+                           histogram_plot=histogram_graphJSON,
+                           scatter_plot=scatter_graphJSON,
+                           mesh_plot=mesh_graphJSON,
+                           pie_diabetes_smoking=pie_graphJSON_diabetes_smoking,
+                           pie_diabetes_heart=pie_graphJSON_diabetes_heart,
+                           pie_non_diabetes_smoking=pie_graphJSON_non_diabetes_smoking,
+                           pie_non_diabetes_heart=pie_graphJSON_non_diabetes_heart)
+
 
 
 @app.route('/result')
