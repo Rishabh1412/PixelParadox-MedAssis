@@ -1,0 +1,112 @@
+{% extends 'formbase.html' %} {% block formtitle %}Diabetes Form{% endblock %}
+{% block formcontent %}
+<div class="position-relative">
+  <a
+    ><button
+      class="position-absolute m-3 p-4 border-0 rounded-circle fs-5 shadow"
+      style="
+        width: 30px;
+        height: 30px;
+        background: var(--green-dark);
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <i class="fa-solid fa-arrow-left"></i></button
+  ></a>
+  <div class="w-100 justify-content-center d-flex pt-4">
+    <h2 style="text-decoration: underline">Diabetes form</h2>
+  </div>
+  <form method="POST" class="px-5 py-3 row gap-3">
+    {{ form.hidden_tag() }}
+    <div class="mb-0 col">
+      <span>{{ form.username.label(class=" fw-semibold text-dark") }}:</span
+      ><br />
+      {{ form.username(class="border bg-body-secondary rounded py-2 px-3 ") }}
+    </div>
+    <div class="mb-0 col">
+      <span>{{ form.gender.label(class=" fw-semibold text-dark") }}:</span
+      ><br />
+      {{ form.gender(class="border-0 d-flex w-100 justify-content-between py-2 px-0 ")
+      }}
+    </div>
+    <div class="mb-0 col">
+      <span>{{ form.age.label(class=" fw-semibold text-dark") }}:</span><br />
+      {{ form.age(class="border bg-body-secondary rounded py-2 px-3 ") }}
+    </div>
+    <div class="mb-0 col-12 col-lg-8 row ms-0">
+      <span>{{ form.address.label(class=" fw-semibold text-dark ") }}:</span
+      ><br />
+      {{ form.address(class="border col-12 bg-body-secondary rounded py-2 px-3
+      ") }}
+    </div>
+    <div class="mb-0 col">
+      <span>{{ form.pincode.label(class=" fw-semibold text-dark") }}:</span
+      ><br />
+      {{ form.pincode(class="border bg-body-secondary rounded py-2 px-3 ") }}
+    </div>
+    <div class="row">
+      <div class="mb-0 col">
+        <span
+          >{{ form.hypertension.label(class=" fw-semibold text-dark") }}:</span
+        ><br />
+        {{ form.hypertension(class="border-0 rounded py-2 px-3 ") }}
+      </div>
+      <div class="mb-0 col">
+        <span
+          >{{ form.previousHeartDisease.label(class=" fw-semibold text-dark")
+          }}:</span
+        ><br />
+        {{ form.previousHeartDisease(class="border-0 rounded py-2 px-3 ") }}
+      </div>
+      <div class="mb-0 col">
+        <span
+          >{{ form.smoking_History.label(class=" fw-semibold text-dark")
+          }}:</span
+        ><br />
+        {{ form.smoking_History(class="border bg-body-secondary rounded py-2
+        px-3 ") }}
+      </div>
+    </div>
+    <div class="row">
+    <div class="mb-0 col-6">
+      <span>{{ form.weight.label(class=" fw-semibold text-dark") }}:</span
+      ><br />
+      {{ form.weight(class="border bg-body-secondary rounded py-2 px-3 ") }}
+    </div>
+    <div class="mb-0 col-6">
+      <span>{{ form.height.label(class=" fw-semibold text-dark") }}:</span
+      ><br />
+      {{ form.height(class="border bg-body-secondary rounded py-2 px-3 ") }}
+    </div>
+    </div>
+    <div class="row">
+    <div class="mb-0 col-6">
+      <span>{{ form.hba1clvl.label(class=" fw-semibold text-dark") }}:</span
+      ><br />
+      {{ form.hba1clvl(class="border bg-body-secondary rounded py-2 px-3 ") }}
+    </div>
+    <div class="mb-0 col-6">
+      <span>{{ form.blood_glucose.label(class=" fw-semibold text-dark") }}:</span
+      ><br />
+      {{ form.blood_glucose(class="border bg-body-secondary rounded py-2 px-3 ") }}
+    </div>
+
+    </div>
+    <div class="row">
+      
+    <div class="mb-0 col-12">
+      <span>{{ form.phone.label(class=" fw-semibold text-dark") }}:</span
+      ><br />
+      {{ form.phone(class="border bg-body-secondary rounded py-2 px-3 ") }}
+    </div>
+    
+    </div>
+    <div class="mb-0 col-12">
+      {{ form.submit(class="border-0 btn rounded-pill fw-bold py-3 px-4 sumbit-button ") }}
+    </div>
+  </form>
+</div>
+{% endblock %}
