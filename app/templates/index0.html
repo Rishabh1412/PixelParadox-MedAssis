@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        .plot-container {
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 100%;
+            height: 100%;
+            /* Ensure the container takes the full height */
+        }
+
+        h1,
+        h2,
+        h5 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .plot-container img,
+        .plot-container iframe {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .col-md-6,
+        .col-md-4 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .plot-container {
+            width: 100%;
+        }
+
+        /* Adjust heights to ensure the graphs fit properly */
+        .plot-container {
+            height: 100%;
+            min-height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container my-4">
+        <h1>Data Visualizations</h1>
+
+        <!-- Row 1: Scatter Plot and Histogram -->
+        <div class="row">
+            <div class="col-md-6 shadow">
+                <div class="plot-container">
+                    <h5>3D Scatter Plot of Systolic BP, Diastolic BP, and Blood Sugar Level</h5>
+                    {{ plot_scatter_html|safe }}
+                </div>
+            </div>
+            <div class="col-md-6 shadow">
+                <div class="plot-container">
+                    <h5>Histogram of Age Group by Gender</h5>
+                    {{ plot_hist_html|safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2: Surface Plot and Heatmap -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="plot-container">
+                    <h5>Surface Plot of Systolic BP, Diastolic BP, and Blood Sugar Level</h5>
+                    {{ plot_surface_html|safe }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="plot-container">
+                    <h5>Heatmap of Protein in Urine vs Serum Creatinine Levels</h5>
+                    {{ plot_heatmap_html|safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3: Mesh Plot and Live Graph -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="plot-container">
+                    <h5>Mesh Plot of HbA1c, Systolic BP, and Diastolic BP</h5>
+                    {{ plot_mesh_html|safe }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="plot-container">
+                    <h5>Live Graph of Cholesterol Levels vs Serum Creatinine Levels</h5>
+                    <div id="live-plot">
+                        {{ plot_live_html|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 4: Pie Charts -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="plot-container">
+                    <h5>Pie Chart of People with Systolic BP Above 120</h5>
+                    {{ plot_pie_systolic_html|safe }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="plot-container">
+                    <h5>Pie Chart of People with Diastolic BP Above 80</h5>
+                    {{ plot_pie_diastolic_html|safe }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="plot-container">
+                    <h5>Pie Chart of People with High HbA1c (>5.7) and Diagnosis = Positive</h5>
+                    {{ plot_pie_hba1c_html|safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 5: Pie Charts -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="plot-container">
+                    <h5>Pie Chart of People with High Cholesterol (>150) and Diagnosis = Positive</h5>
+                    {{ plot_pie_cholesterol_html|safe }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="plot-container">
+                    <h5>Pie Chart of Diagnosis = Positive by Gender</h5>
+                    {{ plot_pie_gender_html|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateLivePlot() {
+            $.get('/live-data', function (data) {
+                $('#live-plot').html(data);
+            });
+        }
+
+        // Update every 5 seconds
+        setInterval(updateLivePlot, 5000);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
