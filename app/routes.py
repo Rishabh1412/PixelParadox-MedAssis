@@ -338,7 +338,7 @@ def diabetes():
 
             send_email(email, "Medassis Report", email_message)
             return redirect(url_for('result_diabetes'))
-
+    return render_template("diabetesform.html",form=diabetesform)
 
 
 @app.route('/result')
