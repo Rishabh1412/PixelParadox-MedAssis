@@ -1,0 +1,9 @@
+.submit-button{
+    background: #80fd80;
+    transition: all 200ms cubic-bezier(0.165, 0.84, 0.44, 1);
+    color:#000;
+}
+.sumbit-button:hover{
+    background: #5bb45b;
+    box-shadow: 5px 5px 5px #0000001a;
+}

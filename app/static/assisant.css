@@ -1,0 +1,122 @@
+
+
+.ai-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(45deg, #0052cc, #00b2ff);
+    border: none;
+    border-radius: 50px;
+    /* Large border radius for pill shape */
+    color: #ffffff;
+    /* font-family: 'Roboto', sans-serif; */
+    font-size: 24px;
+    /* Larger font size */
+    font-weight: bold;
+    padding: 15px 30px;
+    /* Larger padding for a substantial button */
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase;
+    /* Uppercase text for modern look */
+    position: relative;
+    z-index: 1;
+    /* Ensure the button is on top of the pseudo-elements */
+}
+
+.ai-button::before,
+.ai-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.ai-button::before {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    /* Subtle border */
+    transition: border-color 0.3s ease;
+}
+
+.ai-button::after {
+    border: 4px solid transparent;
+    /* Larger, gradient border */
+    border-radius: 50px;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)) border-box;
+    z-index: -1;
+    /* Place behind the button */
+    animation: borderAnimation 2s infinite linear;
+}
+
+.ai-button:hover {
+    background: linear-gradient(45deg, #004bb5, #0095d9);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    transform: scale(1.05);
+    /* Slight scale up on hover */
+}
+
+.ai-button:active {
+    transform: scale(0.98);
+    /* Slight scale down on click */
+}
+
+.ai-icon {
+    margin-right: 12px;
+    font-size: 30px;
+    
+    transition: color 0.3s ease;
+}
+
+.ai-text {
+    font-size: 30px;
+    display: flex;
+    padding: 0;
+    transition: color 0.3s ease;
+}
+@media (max-width:576px) {
+    .ai-icon,.ai-text{
+        font-size: 22px;
+    }
+    .ai-icon{
+        margin-right: 0;
+    }
+    .ai-button{
+        flex-direction: column;
+        padding: 10px 15px;
+    }
+    .ai-text{
+        flex-direction: column;
+    }
+}
+
+.ai-button:hover .ai-icon,
+.ai-button:hover .ai-text {
+    color: #ccfcf3;
+    /* Change icon and text color on hover */
+}
+
+@keyframes borderAnimation {
+    0% {
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: scale(1);
+    }
+
+    50% {
+        border-color: rgba(255, 255, 255, 0.7);
+        transform: scale(1.1);
+    }
+
+    100% {
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: scale(1);
+    }
+}

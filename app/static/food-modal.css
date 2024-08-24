@@ -1,0 +1,146 @@
+.new-primary {
+    color: #56f1f9;;
+}
+
+.new-main-back {
+    background: #111;
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.new-intro-text {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.new-chat-container-ai::-webkit-scrollbar {
+    display: none;
+}
+
+.new-chat-container-ai {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-top: 20px;
+    max-height: 80vh;
+    padding-bottom: 20px;
+}
+
+.new-chat-bubble {
+    background:transparent;
+    border: #56f1f9 1px solid;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    max-width: 80%;
+    color: #fff;
+    font-size: 14px;
+}
+
+.new-chat-bubble.user {
+    align-self: flex-end;
+    background: #56f1f9;;
+    color: #000;
+}
+
+.new-chat-bubble.bot {
+    align-self: flex-start;
+    
+}
+
+.new-roundpill {
+    border-radius: 40px;
+    border: #56f1f9 2px solid;
+    transition: all 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+.new-roundpill:hover{
+    color: black;
+}
+.new-dot{
+    transition: all 500ms cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.new-roundpill:hover .new-dot {
+    transform: scale(100);
+    background:#56f1f9;
+    
+    
+}
+.new-roundpill:hover .new-prompt{
+    color: #000;
+}
+
+
+
+.new-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0 0 5px 0;
+    background: transparent;
+    bottom: 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.new-input-prompt {
+    flex-grow: 1;
+    padding: 10px 20px;
+    border:#f5f5f5 1px double;
+    border-radius: 40px;
+    background:transparent;
+    color: #bebebe;
+    caret-color: #56f1f9;
+    transition: background 0.3s ease;
+    transition: height 0.3s ease;
+}
+
+.new-send-button-ai {
+    padding: 10px 10px;
+    border: none;
+    border-radius: 50%;
+    background: #56f1f9;;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 128, 128, 0.5);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+/* New Input Container Styles */
+.new-input-container {
+    gap: 10px;
+}
+@media (max-width:576px) {
+    .new-input-container{
+        gap: 3px;;
+    }
+}
+
+#disease-input {
+    margin-right: 10px;
+}
+
+.new-input-prompt {
+    display: inline-block;
+    width: 100%;
+    transition: display 0.5s ease-in-out;
+}
+
+/* Loading Animation for Send Button */
+#loading-spinner {
+    display: none;
+}
+
+.sending #send-button-text {
+    display: none;
+}
+
+.sending #loading-spinner {
+    display: inline-block;
+}

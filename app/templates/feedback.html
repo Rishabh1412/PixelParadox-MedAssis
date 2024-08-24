@@ -1,0 +1,81 @@
+<div class="modal fade" style="z-index: 5;" id="examplefeedback" tabindex="2" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-white p-2 p-md-4" style="min-height: 500px;">
+            <div class="modal-body">
+                <h4 class="fw-semibold text-dark">Help us improve our product for you</h4>
+                <br />
+                <p class="text-body-tertiary">How would you like to describe your experience with the app today?</p>
+                <br />
+                <div class="emoji-rate d-flex justify-content-between">
+                    <div class="emoji-group" data-value="Awful">
+                        <span class="emojis p-3 fs-4 rounded-circle">😠</span><span
+                            class="rate-text text-body-tertiary">Awful</span>
+                    </div>
+                    <div class="emoji-group" data-value="Poor">
+                        <span class="emojis p-3 fs-4 rounded-circle">😞</span><span
+                            class="rate-text text-body-tertiary">Poor</span>
+                    </div>
+                    <div class="emoji-group" data-value="Neutral">
+                        <span class="emojis p-3 fs-4 rounded-circle">😐</span><span
+                            class="rate-text text-body-tertiary">Neutral</span>
+                    </div>
+                    <div class="emoji-group" data-value="Good">
+                        <span class="emojis p-3 fs-4 rounded-circle">😊</span><span
+                            class="rate-text text-body-tertiary">Good</span>
+                    </div>
+                    <div class="emoji-group" data-value="Excellent">
+                        <span class="emojis p-3 fs-4 rounded-circle">🤩</span><span
+                            class="rate-text text-body-tertiary">Excellent</span>
+                    </div>
+                </div>
+                <form method="post">
+                    {{ feedback_form.hidden_tag() }}
+                    <input type="hidden" name="reaction" value="">
+                    <input type="hidden" name="feedback_text" value="{{ feedback_form.feedback.data }}">
+                    <div style="min-height: 50px; padding-top:50px;" class="row">
+                        {{ feedback_form.feedback(class='m-0 mb-5 col-12 px-2 bg-body-secondary text-dark border-0
+                        rounded py-2') }}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary shadow"
+                            data-bs-dismiss="modal">Close</button>
+                        {{ feedback_form.submit(class='btn btn-emoji shadow') }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to handle emoji selection and highlight
+    document.querySelectorAll('.emoji-group').forEach(function (group) {
+        group.addEventListener('click', function () {
+            // Remove highlight from all emojis
+            document.querySelectorAll('.emoji-group .emojis').forEach(function (emoji) {
+                emoji.classList.remove('selected-emoji');
+            });
+
+            // Add highlight to the selected emoji
+            this.querySelector('.emojis').classList.add('selected-emoji');
+
+            // Set the value in the hidden input
+            document.querySelector('input[name="reaction"]').value = this.getAttribute('data-value');
+        });
+    });
+
+    // Update feedback text input before submitting the form
+    document.querySelector('form').addEventListener('submit', function () {
+        document.querySelector('input[name="feedback_text"]').value = document.querySelector('textarea').value;
+    });
+</script>
+
+<style>
+    /* CSS to highlight selected emoji */
+    .selected-emoji {
+        background-color: #dbf4d6;
+        box-shadow: 0 0 10px #f0c14b;
+    }
+</style>

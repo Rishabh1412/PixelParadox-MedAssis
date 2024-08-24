@@ -1,0 +1,48 @@
+<div class="modal fade" id="diet-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-white p-0 m-0" style="transform: translateX(-15px);">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 px-1 px-md-3" id="exampleModalLabel">Diet Chart Preference Form</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <form method="POST" class="row px-4">
+                    {{ dietchart.hidden_tag() }}
+                    <div class="col-12 d-flex mb-3 flex-column">
+                        {{ dietchart.age.label(class='fw-semibold') }}
+                        {{ dietchart.age(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ dietchart.weight.label(class='fw-semibold') }}
+                        {{ dietchart.weight(class='rounded py-2 px-2 border-0 w-100 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ dietchart.height.label(class='fw-semibold') }}
+                        {{ dietchart.height(class='rounded py-2 px-2 border-0 w-100 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ dietchart.disease.label(class='fw-semibold') }}
+                        {{ dietchart.disease(class='rounded py-2 px-2 border-0 w-100 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ dietchart.allergy.label(class='fw-semibold') }}
+                        {{ dietchart.allergy(class='rounded py-2 px-2 border-0 w-100 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ dietchart.preference.label(class='fw-semibold') }}
+                        {{ dietchart.preference(class='rounded py-2 px-2 border-0 w-100 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ dietchart.region.label(class='fw-semibold') }}
+                        {{ dietchart.region(class='rounded py-2 px-2 border-0 w-100 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-12  mt-4">
+
+                        {{ dietchart.submit(class='rounded w-100 btn btn-dark px-4 py-2 rounded') }}
+                    </div>
+                </form>
+            </div>
+           
+        </div>
+    </div>
+</div>

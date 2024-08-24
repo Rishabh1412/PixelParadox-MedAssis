@@ -1,0 +1,33 @@
+.form-base {
+    border-radius: 20px;
+}
+
+.buttons {
+    background: #6cff6c;
+    position: relative;
+    border-radius: 10px;
+    padding: 10px 20px;
+    transition: all 500ms cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+.buttons:hover {
+    background:#f3f0f088;
+    color: black;
+}
+/* 
+.dot {
+    background: #000;
+    padding: 8px;
+    border-radius: 50%;
+    z-index: 2;
+    position: absolute;
+    /* transform: scale(20); */
+/* }
+
+.buttons:hover .dot {
+    z-index: 2;
+    padding: 10px;
+    border-radius: 50%;
+    background: #c32424;
+    transform:scale(10);
+} */ 

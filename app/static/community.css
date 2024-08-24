@@ -1,0 +1,273 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* max-width: 600px; Set a maximum width for larger screens */
+    height: 100%;
+    border: 1px solid #a5d6a7;
+    /* border-radius: 10px; */
+    background-color: #ffffff; /* White background */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: background-color 0.3s;
+}
+
+.chat-container {
+    /* border-color: #388e3c; */
+    background-color: #004d40; /* Dark green background */
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #4caf50; /* Green header */
+    color: #fff;
+    border-bottom: 1px solid #388e3c;
+    transition: background-color 0.3s;
+}
+.chat-header {
+    background-color: #00695c; /* Dark green header */
+    border-bottom: 1px solid #004d40;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.avatar img {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.user-info {
+    margin-left: 15px;
+}
+
+.user-info h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.user-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #d1d1d1;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.dark-mode-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.dark-mode-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #c8e6c9; /* Light green slider background */
+    transition: .4s;
+    border-radius: 50px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #4caf50; /* Green slider background */
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+ .slider {
+    background-color: #004d40; /* Dark green slider background */
+}
+
+body.dark-mode .slider:before {
+    background-color: #fff;
+}
+
+.chat-window {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-image: url(../static/assests/pikaso_texttoimage_35mm-film-photography-doodle-image-for-healthcare-.jpeg); 
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    overflow-x: hidden;
+    flex-direction: column;
+    transition: background-color 0.3s;
+}
+
+body.dark-mode .chat-window-user {
+    background-color: #00251a; /* Dark green chat window background */
+}
+
+.input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #a5d6a7;
+    background-color: #ffffff; /* White input area background */
+}
+
+body.dark-mode .input-area {
+    border-top: 1px solid #004d40;
+    background-color: #004d40; /* Dark green input area background */
+}
+
+#chat-input-user {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #a5d6a7;
+    border-radius: 20px;
+    margin-right: 10px;
+    outline: none;
+    font-size: 14px;
+}
+
+#send-button-user {
+    padding: 10px 20px;
+    border: none;
+    background-color: #4caf50; /* Green button */
+    color: #fff;
+    border-radius: 20px;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s;
+}
+
+#send-button-user:hover {
+    background-color: #388e3c; /* Darker green on hover */
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+    margin-bottom: 10px;
+    padding: 10px 25px;
+    border-radius: 30px;
+    word-wrap: break-word;
+
+}
+
+.message.user {
+    background-color: #1F4B2C;
+    /* Green for current user's messages */
+    color: #fff;
+    align-self: flex-end;
+    /* Align current user's messages to the right */
+    border-bottom-right-radius: 0;
+    margin-left: auto;
+    animation: slideInFromRight 0.3s ease-out;
+}
+
+.message.bot {
+    background-color: #f4fef7;
+    /* Light green for other user's messages */
+    color: #000;
+    align-self: flex-start;
+    /* Align other user's messages to the left */
+    border-bottom-left-radius: 0;
+    margin-right: auto;
+    border: #1F4B2C 1px solid;
+    animation: slideInFromLeft 0.3s ease-out;
+}
+
+.username {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #ffffff;
+    /* Make the username color white */
+}
+
+.message-text {
+    /* margin-bottom: 5px; */
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #999;
+    align-self: flex-end;
+}
+
+.currentUsername {
+    align-self: flex-end;
+    background-color: #959c9a;
+    color: #d1d1d1;
+    border-radius: 10px;
+    padding: 2px 6px;
+    margin-right: 0;
+}
+
+.bot .username {
+    align-self: flex-start;
+    color: #373737;
+}
+
+@keyframes slideInFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.timestamp {
+    font-size: 10px;
+    color: #a5d6a7;
+    align-self: flex-end;
+    margin-top: 5px;
+}
+.currentUsername{
+    background-color: #00251a;
+    color: #d1d1d1;
+    border-radius: 10px;
+    border: 0;
+}

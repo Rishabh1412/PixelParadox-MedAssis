@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+{% block title %}Medassis | Appointment{% endblock %}
+{% block content %}
+<!-- Include feedback form -->
+{% include "feedback.html" %}
+
+<div style="height: 100vh; overflow-y: auto;">
+    <div class="px-4 pt-3 pt-md-4 position-relative d-flex justify-content-between align-items-center mobhead">
+        <h4 class="ps-md-0 fs-3 fs-md-3 pt-0 fw-semibold">Appointment</h4>
+        <a href="{{ url_for('logout') }}">
+            <button class="logout me-5 me-md-0 shadow postion-fixed">Log Out <i
+                    class="fa-solid fa-right-from-bracket"></i></button>
+        </a>
+        <i class="fa-solid fa-bars d-md-none me-2 d-flex position-fixed menu-button shadow"
+            onclick="togglesidebar()"></i>
+    </div>
+
+    <style>
+        /* Custom styles */
+        .doctor-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            /* Start off-screen */
+            height: 100%;
+            background-color: #f8f9fa;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1050;
+            transition: transform 0.4s ease-in-out;
+            transform: translateX(100%);
+            /* Slide out by default */
+        }
+
+        .doctor-sidebar.show {
+            transform: translateX(0);
+            /* Slide in when shown */
+        }
+
+        .doctor-card {
+            margin-bottom: 20px;
+        }
+
+        .time-select-panel {
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .doctor-sidebar {
+                height: 60%;
+                right: 0;
+                /* Make sure it's aligned to the right */
+                transform: translateY(115%);
+                /* Slide out from the bottom */
+            }
+
+            .doctor-sidebar.show {
+                transform: translateY(15%);
+                /* Slide in from the bottom */
+            }
+        }
+
+        @media (min-width: 992px) {
+            .doctor-sidebar {
+                display: block;
+                position: relative;
+                right: 0;
+                transform: none;
+                /* No transform on large screens */
+                height: auto;
+                /* Auto height for large screens */
+                box-shadow: none;
+                transition: none;
+                /* No animation on large screens */
+            }
+        }
+
+        .selected-doctor {
+            background-color: #e9ecef;
+            /* Light grey background */
+            border-left: 4px solid #007bff;
+            /* Blue left border */
+        }
+        .doctor-hover{
+            transition: all 100ms cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .doctor-hover:hover{
+            cursor: pointer;
+            background: aliceblue;
+        }
+    </style>
+
+    <div class="px-2 mt-2 py-2 px-md-3">
+        <div class="container-fluid bg-light rounded h-75">
+            <div class="row">
+                <div class="col-lg-8 p-3">
+                    <div class="p-3 rounded bg-white doctor-card shadow-sm border-0">
+                        <div class="card-body d-flex gap-3">
+                            <div>
+                                <div
+                                    class="rounded-circle bg-secondary d-flex justify-content-center align-items-center">
+                                    <i class="p-3 text-white fa-solid fa-user-doctor"></i>
+                                </div>
+                            </div>
+                            <div class="pb-3">
+                                <h5 class="card-title fw-bold">Doctor Name</h5>
+                                <p class="card-text">--</p>
+                            </div>
+                        </div>
+                        <div class="row px-5">
+                            <div class="col-6">
+                                <p class="m-0 fw-semibold">Availability:</p>
+                                <p class="availability">--</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="m-0 fw-semibold">Contact number:</p>
+                                <p class="phone">--</p>
+                            </div>
+                        </div>
+                        <div class="row px-5">
+                            <div class="col-6">
+                                <p class="m-0 fw-semibold">City:</p>
+                                <p class="city">--</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="m-0 fw-semibold">Pincode:</p>
+                                <p class="pincode">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card time-select-panel rounded px-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Select Appointment Time</h5>
+                            <div class="form-group">
+                                <label for="appointmentTime" class="fw-semibold mb-2">Choose a time:</label>
+                                <div class="d-flex gap-2 w-100" style="overflow-x: auto;">
+                                    <div class="btn btn-outline-dark btn-sm">9:00-9:30am</div>
+                                    <div class="btn btn-outline-dark btn-sm">9:30-10:00am</div>
+                                    <div class="btn btn-outline-dark btn-sm">10:00-10:30am</div>
+                                    <div class="btn btn-outline-dark btn-sm">12:00-12:30am</div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <p class="fw-semibold m-0">Date:</p>
+                                    <input type="date" class="px-3 py-2 bg-light border-0 rounded-pill" />
+                                </div>
+                                <div class="col-6">
+                                    <p class="fw-semibold m-0">Day:</p>
+                                    <select class="px-3 py-2 bg-light border-0 rounded-pill">
+                                        <option>Monday</option>
+                                        <option>Tuesday</option>
+                                        <option>Wednesday</option>
+                                        <option>Thursday</option>
+                                        <option>Friday</option>
+                                        <option>Saturday</option>
+                                        <option>Sunday</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-dark">Fix Appointment</button>
+                        <button class="btn btn-outline-dark">Join Appointment</button>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="col-lg-4 doctor-sidebar shadow border-top border-start border-1 border-body-seconday bg-light border-left"
+                    style="height: 90vh;" id="doctorSidebar">
+                    <h5 class="px-2 pt-3 pb-1 text-dark d-flex justify-content-between align-items-center">
+                        Select a Doctor
+                        <i class="btn btn-dark p-3 rounded-circle fa-solid fa-xmark d-lg-none" id="closeSidebarBtn"></i>
+                    </h5>
+                    <div class="px-0 pb-2">
+                        <input type="text" id="doctorSearch" class="form-control w-100 rounded-pill"
+                            placeholder="Search for a doctor...">
+                    </div>
+                    <ul class="list-group" id="doctorList">
+                        {% for doctor in doctors_data %}
+                        <li class="list-group-item d-flex doctor-hover justify-content-between selectable-doctor"
+                            data-doctor-id="{{ doctor.id }}">
+                            <div>
+                                <i class="fa-solid pe-2 fa-user-doctor"></i>{{ doctor.username }}
+                            </div>
+                            <span class="badge d-flex align-items-center text-bg-dark">{{ doctor.specialization
+                                }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Toggle Button (Visible on small and medium devices) -->
+            <div class="top-1 end-0 m-3 position-fixed">
+                <button class="btn btn-dark d-lg-none rounded-pill d-flex justify-content-center align-items-center"
+                    id="toggleSidebarBtn">
+                    <i class="fa-solid fa-magnifying-glass p-3"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Doctor data from Flask
+            const doctorsData = {{ doctors_data| tojson | safe
+        }};
+
+        // Function to clear selection
+        function clearSelection() {
+            document.querySelectorAll('#doctorList .selectable-doctor').forEach(function (doctor) {
+                doctor.classList.remove('selected-doctor');
+            });
+        }
+
+        // Function to handle doctor selection
+        document.querySelectorAll('#doctorList .selectable-doctor').forEach(function (doctor) {
+            doctor.addEventListener('click', function () {
+                // Clear previous selection
+                clearSelection();
+
+                // Highlight selected doctor
+                this.classList.add('selected-doctor');
+
+                // Fetch doctor ID
+                let doctorId = this.getAttribute('data-doctor-id');
+
+                // Find the selected doctor's data
+                let selectedDoctor = doctorsData.find(d => d.id == doctorId);
+
+                // Update left window with selected doctor's details
+                document.querySelector('.doctor-card .card-title').textContent = selectedDoctor.username;
+                document.querySelector('.doctor-card .card-text').textContent = selectedDoctor.specialization;
+                document.querySelector('.doctor-card .availability').textContent = selectedDoctor.availability ? 'Yes' : 'No';
+                document.querySelector('.doctor-card .phone').textContent = selectedDoctor.phone;
+                document.querySelector('.doctor-card .city').textContent = selectedDoctor.city;
+                document.querySelector('.doctor-card .pincode').textContent = selectedDoctor.pincode;
+            });
+        });
+
+        // Function to handle search
+        document.getElementById('doctorSearch').addEventListener('input', function () {
+            let filter = this.value.toLowerCase();
+            document.querySelectorAll('#doctorList .selectable-doctor').forEach(function (doctor) {
+                let doctorName = doctor.textContent.toLowerCase();
+                if (doctorName.includes(filter)) {
+                    doctor.style.display = ''; // Show the doctor
+                } else {
+                    doctor.style.display = 'none'; // Hide the doctor
+                }
+            });
+        });
+
+        // Toggle sidebar visibility
+        document.getElementById('toggleSidebarBtn').addEventListener('click', function () {
+            document.getElementById('doctorSidebar').classList.toggle('show');
+        });
+        document.getElementById('closeSidebarBtn').addEventListener('click', function () {
+            document.getElementById('doctorSidebar').classList.toggle('show');
+        });
+        });
+    </script>
+</div>
+{% endblock %}

@@ -34,3 +34,13 @@
     color: #797979;
     font-size: smaller;
 }
+.setprofile{
+    transition: 400ms all cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.setprofile:hover{
+    transform: rotate(-50deg);
+}
+.setprofile:hover:active{
+    transform: rotate(180deg);
+    transform: scale(0.9);
+}

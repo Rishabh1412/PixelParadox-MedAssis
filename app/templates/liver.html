@@ -1,0 +1,102 @@
+{% extends 'formbase.html' %} {% block formtitle %}Medassis | Liver Form{% endblock %}
+{% block formcontent %}
+<div class="position-relative">
+    <a href="{{ url_for('dashboard') }}"><button class="position-absolute m-3 p-4 border-0 rounded-circle fs-5 shadow" style="
+        width :30px;
+        height: 30px;
+        background :var(--green-dark);
+        color: #fff;
+        display :flex;
+        justify-content :center;
+        align-items:center;
+      ">
+            <i class="fa-solid fa-arrow-left"></i></button></a>
+    <div class="w-100 justify-content-center d-flex pt-4">
+        <h2 style="text-decoration:underline">Liver form</h2>
+    </div>
+    <form method="POST" class="px-3 py-3 row ms-3">
+        {{ liverform.hidden_tag() }}
+            <h4 class="text-decoration-underline">Personal Information</h4>
+
+        <div class="mb-3 col-12">
+            <span>{{ liverform.name.label(class="fw-semibold text-dark") }}</span><br />
+            {{ liverform.name(class="border bg-body-secondary rounded py-2 px-3 w-75") }}
+        </div>
+        <div class="mb-3 col-6">
+            <span>{{ liverform.gender.label(class="fw-semibold text-dark") }}</span><br />
+            {{ liverform.gender(class="border-0 d-flex w-100 justify-content-evenly py-2 px-0 w-100 ms-3") }}
+        </div>
+        <div class="mb-3 col-6">
+            <span>{{ liverform.age.label(class="fw-semibold text-dark") }}</span><br />
+            {{ liverform.age(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+        <div class="mb-3 col-12 col-lg-8 ms-0">
+            <span>{{ liverform.address.label(class="fw-semibold text-dark") }}</span><br />
+            {{ liverform.address(class="border col-12 bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+        <div class="mb-3 col-6 col-md-4">
+            <span>{{ liverform.pincode.label(class="fw-semibold text-dark") }}</span><br />
+            {{ liverform.pincode(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+        </div>
+            <h4 class="mt-3 text-decoration-underline">Medical Information</h4>
+
+        
+            <div class="mb-3 col-6 col-md-4">
+                <span>{{ liverform.total_protein.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.total_protein(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+            <div class="mb-3 col-6 col-md-4">
+                <span>{{ liverform.albumin.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.albumin(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+            <div class="mb-3 col-6 col-md-4">
+                <span>{{ liverform.ag_ratio.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.ag_ratio(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+        
+        
+            <div class="mb-3 col-6 col-md-4">
+                <span>{{ liverform.total_bilirubin.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.total_bilirubin(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+            <div class="mb-3 col-6 col-md-4">
+                <span>{{ liverform.direct_bilirubin.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.direct_bilirubin(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+            <div class="mb-3 col-6 col-md-4">
+                <span>{{ liverform.alkaline_phosphate.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.alkaline_phosphate(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+        
+        
+            <div class="mb-3 col-6 col-md-4">
+                <span>{{ liverform.sgpt.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.sgpt(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+            <div class="mb-3 col-6 col-md-4">
+                <span>{{ liverform.sgot.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.sgot(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+            <div class="mb-3 col-6">
+                <span>{{ liverform.height.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.height(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+        
+        
+            <div class="mb-3 col-6">
+                <span>{{ liverform.weight.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.weight(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+            <h4 class="mt-3 text-decoration-underline">Contact Information</h4>
+            <div class="mb-3 col-6">
+                <span>{{ liverform.phone.label(class="fw-semibold text-dark") }}</span><br />
+                {{ liverform.phone(class="border bg-body-secondary rounded py-2 px-3 w-100") }}
+            </div>
+
+        <div class="mb-3 col-12">
+            {{ liverform.submit(class="border-0 btn rounded-pill fw-bold py-3 px-4 btn btn-success submit-button") }}
+        </div>
+
+    </form>
+</div>
+{% endblock %}

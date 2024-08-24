@@ -1,0 +1,41 @@
+<div class="modal fade" style="max-height: 90vh;" id="medicine-modal" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content med-baseai">
+            <div class="modal-header shadow" style="background: #b3eda9;">
+                <h1 class="modal-title fs-5" id="medBackdropLabel" style="color:#050505; border:0">MedicineAssis</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 m-0">
+                <div class="med-main-back rounded p-md-5 p-3 d-flex flex-column">
+                    <div id="med-intro-text" class="med-intro-text">
+                        <h5 class="fw-bold text-dark-subtle med-chat-title" style="line-height: 0.8;">Hello,
+                            <span class="med-primary">{{ ME }}</span><br />I am here to
+                            <span class="med-primary">advise</span>
+                            and <span class="med-primary">help you.</span>
+                        </h5>
+                    </div>
+
+                    <div class="med-chat-container-ai d-flex flex-column" id="med-chat-container-ai"></div>
+
+                    <!-- Input Container -->
+                    <div class="med-input-container pt-2 mb-3 mb-md-0 d-flex align-items-center"
+                        id="med-input-container">
+
+                        <input class="form-control py-3 rounded-pill med-input-prompt shadow me-2" type="file"
+                            id="med-image-input" name="image-input" accept="image/*"
+                            style="flex: 3; transition: all 200ms linear;" />
+
+                        <button id="med-send-button-ai" class="med-send-button-ai rounded-pill px-2 px-md-4 py-3"
+                            type="submit" style="flex: 0.5;">
+                            <span id="med-send-button-text"><i class="fa-solid fa-paper-plane"></i></span>
+                            <span id="med-loading-spinner" class="spinner-border spinner-border-sm" role="status"
+                                aria-hidden="true" style="display: none;"></span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="modal fade" style="max-height: 90vh;" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content baseai">
+      <div class="modal-header shadow" style="background: #6a0bff;">
+        <h1 class="modal-title fs-5 " id="staticBackdropLabel" style="color:white; border:0">Chat Assis</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0 m-0">
+        <div class="main-back rounded p-md-5 p-3 d-flex flex-column">
+          <div id="intro-text" class="intro-text">
+            <h3 class="fw-bold text-dark-subtle chat-title" style="line-height: 0.8;">Hi, Username<br />I am here to
+              <span class="primary">advise</span><br />
+              and <span class="primary">help you.</span>
+            </h3>
+          </div>
+          <div id="cards-container" class="cards-ai d-flex row gap-md-4 gap-2 pt-5">
+            <div id="p1" class="card-ai p-2 p-md-4 p-lg-5 bg-dark roundpill text-light col" onclick="handleP1Click()">
+              <div class="dot p-2"></div>
+              <h5 class="prompt p1_text fs-6">Hello</h5>
+            </div>
+            <div id="p2" class="card-ai p-2 p-md-4 p-lg-5 bg-dark roundpill text-light col" onclick="handleP2Click()">
+              <div class="dot p-2"></div>
+              <h5 class="prompt p2_text fs-6">Had a tough day!</h5>
+            </div>
+            <div id="p3" class="card-ai p-2 p-md-4 p-lg-5 bg-dark roundpill text-light col" onclick="handleP3Click()">
+              <div class="dot p-2"></div>
+              <h5 class="prompt p3_text fs-6">Feeling Weak...</h5>
+            </div>
+          </div>
+          <div class="chat-container-ai d-flex flex-column" id="chat-container-ai"></div>
+          
+            
+              <div class="input-container" id="input-container">
+            
+              <input class="px-2 px-md-4 py-3 border-0 rounded-pill input-prompt bg-dark shadow" id="user-prompt" name="message-input-to-bot"
+                
+              placeholder="Type your message..."
+              type="text" />
+              <button id="send-button-ai" class="send-button-ai rounded-pill px-2 px-md-4 py-3" type="submit">
+                <span id="send-button-text">Send</span>
+                <span id="loading-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+              </button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+
+    </div>
+  </div>
+</div>
+</div>
