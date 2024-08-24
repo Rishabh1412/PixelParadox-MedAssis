@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Data Visualization</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Diabetes Data Visualization</h1>
+
+    <h2>3D Bubble Plot</h2>
+    <div id="bubble_plot"></div>
+    <script>
+        var bubblePlotData = {{ bubble_plot|safe }};
+        Plotly.react('bubble_plot', bubblePlotData.data, bubblePlotData.layout);
+    </script>
+
+    <h2>Histogram</h2>
+    <div id="histogram"></div>
+    <script>
+        var histogramPlotData = {{ histogram_plot|safe }};
+        Plotly.react('histogram', histogramPlotData.data, histogramPlotData.layout);
+    </script>
+
+    <h2>3D Scatter Plot</h2>
+    <div id="scatter_plot"></div>
+    <script>
+        var scatterPlotData = {{ scatter_plot|safe }};
+        Plotly.react('scatter_plot', scatterPlotData.data, scatterPlotData.layout);
+    </script>
+
+    <h2>3D Mesh Plot</h2>
+    <div id="mesh_plot"></div>
+    <script>
+        var meshPlotData = {{ mesh_plot|safe }};
+        Plotly.react('mesh_plot', meshPlotData.data, meshPlotData.layout);
+    </script>
+
+    <h2>Pie Charts</h2>
+    <h3>Smoking History (Diabetes)</h3>
+    <div id="pie_diabetes_smoking"></div>
+    <script>
+        var pieDiabetesSmokingData = {{ pie_diabetes_smoking|safe }};
+        Plotly.react('pie_diabetes_smoking', pieDiabetesSmokingData.data, pieDiabetesSmokingData.layout);
+    </script>
+
+    <h3>Heart Disease (Diabetes)</h3>
+    <div id="pie_diabetes_heart"></div>
+    <script>
+        var pieDiabetesHeartData = {{ pie_diabetes_heart|safe }};
+        Plotly.react('pie_diabetes_heart', pieDiabetesHeartData.data, pieDiabetesHeartData.layout);
+    </script>
+
+    <h3>Smoking History (Non-Diabetes)</h3>
+    <div id="pie_non_diabetes_smoking"></div>
+    <script>
+        var pieNonDiabetesSmokingData = {{ pie_non_diabetes_smoking|safe }};
+        Plotly.react('pie_non_diabetes_smoking', pieNonDiabetesSmokingData.data, pieNonDiabetesSmokingData.layout);
+    </script>
+
+    <h3>Heart Disease (Non-Diabetes)</h3>
+    <div id="pie_non_diabetes_heart"></div>
+    <script>
+        var pieNonDiabetesHeartData = {{ pie_non_diabetes_heart|safe }};
+        Plotly.react('pie_non_diabetes_heart', pieNonDiabetesHeartData.data, pieNonDiabetesHeartData.layout);
+    </script>
+</body>
+</html>
