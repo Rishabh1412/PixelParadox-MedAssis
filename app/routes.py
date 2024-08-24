@@ -3,9 +3,11 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from app.forms import OtpForm,SignInForm,SignUpForm,UserProfileForm
 from app.models import User
 import random
+from app.mails import send_email
 from functools import wraps
 
 user_details=[]
+get_otp=[]
 
 
 def get_current_user():
@@ -62,6 +64,8 @@ def signup():
         user_details.append(form.password.data)
         global otp
         otp=random.randint(100000, 999999)
+        get_otp.append(otp)
+        send_email(form.email_address.data,"Medassis Verification", f"Welcome to Medassis !!!\n Your OTP for verification is {otp}. Please enter your OTP to create an account.")
         return redirect(url_for('otp'))
             
         #else:
@@ -77,27 +81,28 @@ def otp():
     otpform=OtpForm()
     if otpform.validate_on_submit():
         global user_details
-        
+        global get_otp
         print("IN OTP")
         # Access form data
         otpnum=int(str(otpform.otp1.data)+str(otpform.otp2.data)+str(otpform.otp3.data)+str(otpform.otp4.data)+str(otpform.otp5.data)+str(otpform.otp6.data))
         
         print(otpnum)
-        
-        
-        with app.app_context():
-            user_data=User(username=user_details[0],
-                            email_address=user_details[1],
-                            password=user_details[2])
-                        
-            db.session.add(user_data)
-            db.session.commit()
-            # login_user(user_data)
-            session['user_id']=user_data.id
-            
-            user_details.pop()
-            user_details.pop()
-            user_details.pop()
+        print(get_otp)
+        if(otpnum==get_otp[0]):
+            with app.app_context():
+                user_data=User(username=user_details[0],
+                                email_address=user_details[1],
+                                password=user_details[2])
+                            
+                db.session.add(user_data)
+                db.session.commit()
+                # login_user(user_data)
+                session['user_id']=user_data.id
+                
+                user_details.pop()
+                user_details.pop()
+                user_details.pop()
+                get_otp.pop()
             
             return redirect(url_for('dashboard'))
         flash(f"Wrong OTP entered !!! Please enter a valid OTP !!!", category='error')
