@@ -18,75 +18,31 @@
         <i class="fa-solid fa-bars d-md-none me-2 d-flex position-fixed menu-button shadow"
             onclick="togglesidebar()"></i>
     </div>
-    <div class="p-2 p-md-4 pt-3 pt-md-5 pt-md-3 rounded bg-white row mx-2 mx-md-4 mt-2 shadow d-flex align-items-center justify-content-between">
-        <input class="py-3 px-4 rounded-pill bg-body-secondary w-100 mx-1 border-0" placeholder="Search for medicine..."/>
-        <div class="col-md-3 col-6 p-3 d-flex justify-content-center ">
-            <div class="rounded border-secondary border m-0 p-0">
-                <img src="../static/assests/Group 4.png" class="rounded" style="object-fit: contain; object-fit: cover; width:108.5% " alt="">
-                <div class="px-3 py-3">
-                    <div class="d-flex justify-content-between">
-                    <h6>Paracetamol</h6>
-                    <span class="badge text-bg-dark d-flex align-items-center">Dark</span>
-                    </div>
-                    <h6>Rs. 124</h6>
-                </div>
-            </div>
-        </div>
+    <div
+        class="p-2 p-md-4 pt-3 pt-md-5 pt-md-3 rounded bg-white row mx-2 mx-md-4 mt-2 shadow d-flex align-items-center ">
+        <input class="py-3 px-4 rounded-pill bg-body-secondary w-100 mx-1 border-0"
+            placeholder="Search for medicine..." />
+        {% for medicine in medicines %}
         <div class="col-md-3 col-6 p-3 d-flex justify-content-center ">
             <div class="rounded border-secondary border m-0 p-0">
                 <img src="../static/assests/Group 4.png" class="rounded"
                     style="object-fit: contain; object-fit: cover; width:108.5% " alt="">
                 <div class="px-3 py-3">
                     <div class="d-flex justify-content-between">
-                        <h6>Paracetamol</h6>
-                        <span class="badge text-bg-dark d-flex align-items-center">Dark</span>
+                        <h6>{{ medicine.medicine_name }}</h6>
+                        <span class="badge text-bg-dark d-flex align-items-center">{{ medicine.medicine_category }}</span>
                     </div>
-                    <h6>Rs. 124</h6>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-6 p-3 d-flex justify-content-center ">
-            <div class="rounded border-secondary border m-0 p-0">
-                <img src="../static/assests/Group 4.png" class="rounded"
-                    style="object-fit: contain; object-fit: cover; width:108.5% " alt="">
-                <div class="px-3 py-3">
-                    <div class="d-flex justify-content-between">
-                        <h6>Paracetamol</h6>
-                        <span class="badge text-bg-dark d-flex align-items-center">Dark</span>
-                    </div>
-                    <h6>Rs. 124</h6>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-6 p-3 d-flex justify-content-center ">
-            <div class="rounded border-secondary border m-0 p-0">
-                <img src="../static/assests/Group 4.png" class="rounded"
-                    style="object-fit: contain; object-fit: cover; width:108.5% " alt="">
-                <div class="px-3 py-3">
-                    <div class="d-flex justify-content-between">
-                        <h6>Paracetamol</h6>
-                        <span class="badge text-bg-dark d-flex align-items-center">Dark</span>
-                    </div>
-                    <h6>Rs. 124</h6>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-6 p-3 d-flex justify-content-center ">
-            <div class="rounded border-secondary border m-0 p-0">
-                <img src="../static/assests/Group 4.png" class="rounded"
-                    style="object-fit: contain; object-fit: cover; width:108.5% " alt="">
-                <div class="px-3 py-3">
-                    <div class="d-flex justify-content-between">
-                        <h6>Paracetamol</h6>
-                        <span class="badge text-bg-dark d-flex align-items-center">Dark</span>
-                    </div>
-                    <h6>Rs. 124</h6>
+                    <h6>Rs. {{ medicine.price }}</h6>
+                    <p class="text-secondary">{{ medicine.shop_name }}</p>
                 </div>
             </div>
         </div>
 
+        {% endfor %}
 
-        
+
+
+
     </div>
 </div>
 {% endblock %}

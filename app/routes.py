@@ -666,6 +666,7 @@ def load_messages():
 def med_shop():
     
     feedback_form = FeedbackForm()
+    medicines=Medicine.query.all()
     if feedback_form.validate_on_submit():
         reaction = request.form.get('reaction')  # Capture emoji reaction
         feedback_text = feedback_form.feedback.data  # Capture feedback text
@@ -686,7 +687,8 @@ def med_shop():
     return render_template(
         'medicine-platform.html',
         user_data=get_current_user(),
-        feedback_form=feedback_form
+        feedback_form=feedback_form,
+        medicines=medicines
     )
     
 @app.route('/medicine-details')
