@@ -17,8 +17,7 @@ content %}
     </div>
     <div class="p-4 pt-2 pt-md-0 ">
 
-        <h5 class=" ps-md-2 fs-5 fs-md-5 pt-1 fw-semibold">Appointments</h4>
-
+            <h5 class="fw-semibold text-decoration-underline">Join appoinment</h5> 
             <div class="row gap-3 mt-4 px-2">
                 <div class="col-12 w-100 bg-white shadow py-4 py-3 rounded d-flex flex-md-row align-items-center flex-column justify-content-between gap-3 px-5">
                     <img src="../static/assests/online-support.gif" width="150" height="150" alt="">
@@ -32,7 +31,14 @@ content %}
 
             </div>
             <div class="my-2 bg-white rounded px-4 py-3">
-               
+             <h5 class=" ps-md-2 fs-5 fs-md-5 pt-1 fw-semibold">Appointments</h5>
+
+               {% for time in timeslot %}
+               <hr class="text-secondary"/>
+                <div class="w-100 justify-content-start align-items-center">
+                    <p>You have an appoinment at <strong>{{ time }}.</strong></p>
+                </div>
+               {% endfor %}
 
             </div>
     </div>

@@ -284,6 +284,46 @@ def doctor_dashboard():
     # slots=[appointments.slot1,appointments.slot2,appointments.slot3,appointments.slot4,appointments.slot5,appointments.slot6,appointments.slot7,appointments.slot8,appointments.slot9,appointments.slot10,appointments.slot11,appointments.slot12,appointments.slot13,appointments.slot14,appointments.slot15,appointments.slot16,appointments.slot17,appointments.slot18,]
     # print(slots)
     feedback_form = FeedbackForm()
+    appointment=Appointment.query.filter_by(doctor_id=get_current_doctor().id).first()
+    timeslot=[]
+    if appointment.slot1:
+        timeslot.append("10-10:30 am")
+    if appointment.slot2:
+        timeslot.append("10:30-11 am")
+    if appointment.slot3:
+        timeslot.append("11-11:30 am")
+    if appointment.slot4:
+        timeslot.append("11:30-12 pm")
+    if appointment.slot5:
+        timeslot.append("12-12:30 pm")
+    if appointment.slot6:
+        timeslot.append("12:30-1:00 pm")  
+    if appointment.slot7:
+        timeslot.append("4:00-4:30 pm") 
+    if appointment.slot8:
+        timeslot.append("4:30-5:00 pm") 
+    if appointment.slot9:
+        timeslot.append("5:00-5:30 pm")
+    if appointment.slot10:
+        timeslot.append("5:30-6:00 pm")
+    if appointment.slot11:
+        timeslot.append("6:00-6:30 pm")
+    if appointment.slot12:
+        timeslot.append("6:30-7:00 pm")
+    if appointment.slot13:
+        timeslot.append("7:00-7:30 pm")
+    if appointment.slot14:
+        timeslot.append("7:30-8:00 pm")
+    if appointment.slot15:
+        timeslot.append("8:00-8:30 pm")
+    if appointment.slot16:
+        timeslot.append("8:30-9:00 pm")
+    if appointment.slot17:
+        timeslot.append("9:00-9:30 pm")
+    if appointment.slot18:
+        timeslot.append("9:30-10:00 pm")
+
+
     if feedback_form.validate_on_submit():
         reaction = request.form.get('reaction')  # Capture emoji reaction
         feedback_text = feedback_form.feedback.data  # Capture feedback text
@@ -304,7 +344,7 @@ def doctor_dashboard():
     if not current_doctor:
         return redirect(url_for("doctorlogin"))
 
-    return render_template('doctor_dashboard.html', user_data=current_doctor, feedback_form=feedback_form)
+    return render_template('doctor_dashboard.html', user_data=current_doctor, feedback_form=feedback_form,timeslot=timeslot)
 
 
 
