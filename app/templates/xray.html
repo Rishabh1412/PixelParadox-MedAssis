@@ -1,5 +1,6 @@
 {% extends 'formbase.html' %} {% block formtitle %}Medassis | Liver Form{% endblock %}
 {% block formcontent %}
+{% include "flash.html" %}
 <div class="position-relative">
     <a href="{{ url_for('dashboard') }}"><button class="position-absolute m-3 p-4 border-0 rounded-circle fs-5 shadow" style="
         width: 30px;

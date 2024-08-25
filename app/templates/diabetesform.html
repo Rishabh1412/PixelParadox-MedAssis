@@ -1,5 +1,6 @@
 {% extends 'formbase.html' %} {% block formtitle %}Medassis | Diabetes Form{% endblock %}
 {% block formcontent %}
+{% include "flash.html" %}
 <div class="position-relative">
   <a href="{{ url_for('dashboard') }}"
     ><button

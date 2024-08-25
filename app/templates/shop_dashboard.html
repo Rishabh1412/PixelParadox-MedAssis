@@ -1,63 +1,81 @@
 {% extends "shop-base.html" %} {% block title %}Medassis | Med-find-S{% endblock %} {% block
 content %}
 {% include "feedback.html" %}
-<style>
-    .action-button:hover{
-        background: aliceblue;
-    }
-</style>
-<div style="color: darkgrey; height: 100vh; border-radius: 0;" class="position-relative">
-    <div class="chat-wrapper" id="chat-wrapper-user">
-        <div class="chat-header">
-            <div class="header-left">
-                <div class="avatar">
-                    <i class="fa-solid fa-handshake-angle"></i>
-                </div>
-                <div class="user-info pb-3">
-                    <i class="fa-solid fa-bars d-lg-none me-2 d-flex position-fixed menu-button shadow"
-                        onclick="togglesidebar()"></i>
-                    <h4 class="ps-md-0  fs-3 fs-md-3 pt-1 fw-semibold position-relative">Med FindAssist</h4>
-                    <p></p>
-                </div>
-            </div>
-        </div>
-        <div class="chat-body" id="chat-body-user">
-            {% for message in messages %}
-            <div class="message-bubble {% if message.msg_type == 'ask' %}ask{% else %}reply{% endif %}">
-                <div class="message-content">
-                    <div class="message-username">{{ message.user_name }}</div>
-                    <p>Medicine: {{ message.medicine_name }}</p>
-                    <p>Pincode: {{ message.user_pincode }}</p>
-                    <p>City: {{ message.user_city }}</p>
-                    {% if message.shop_name %}
-                    <p>Shop Name: {{ message.shop_name }}</p>
-                    {% if message.location %}
-                    <p>Location: {{ message.location }}</p>
-                    {% endif %}
-                    {% endif %}
-                    {% if message.price %}
-                    <p>Price: Rs.{{ message.price }}</p>
-                    {% endif %}
-                    <div class="timestamp">{{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+{% include "flash.html" %}
+<div style="height: 100vh; overflow-y: auto;">
+    <div class="px-4 pt-3 pt-md-4 position-relative d-flex justify-content-between align-items-center mobhead">
+        <!-- <div class="d-flex justify-content-between postion-fixed pt-5 pt-md-0"> -->
 
+        <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">Swastik Medical</h4>
 
-
-        <div class="d-flex flex-column gap-1 gap-md-2 fixed start-0 bottom-0 position-absolute z-5">
-
-            <button id="reply-button-user" type="button" data-bs-toggle="modal" data-bs-target="#reply-modal"
-                style="width:50px; height:50px"
-                class="action-button border-0 shadow rounded-circle fs-5 ms-2 mb-2 d-flex align-items-center justify-content-center"><i
-                    class="p-4 fa-solid fa-reply"></i></button>
-
-        </div>
-
-        {% include 'replyform.html' %}
+        <a href="{{ url_for('shop_logout') }}"><button class="logout me-5 me-md-0 shadow postion-fixed">
+                Log Out <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </a>
+        <i class="fa-solid fa-bars d-md-none me-2 d-flex position-fixed menu-button shadow"
+            onclick="togglesidebar()"></i>
     </div>
+    <h5 class="px-5 ">My Stocks</h5>
+
+    <div class="row gap-3 gap-lg-0 m-3">
+        <div class="col-lg-4 h-100 col-12 py-5 px-5 bg-white rounded shadow d-flex flex-column">
+            <div class="d-flex gap-3 ">
+                
+                <h6 class="fw-semibold">Swastik Gupta</h6>
+            </div>
+            <div class="row ">
+                <div class="col-6">
+                    <strong>Pincode</strong>
+                    <p>741235</p>
+                </div>
+                <div class="col-6">
+                    <strong>City</strong>
+                    <p>Kalyani</p>
+                </div>
+            </div>
+            <div>
+                <strong>Email</strong>
+                <p>swastikgupta@gmail.com</p>
+            </div>
+            <div>
+                <strong>Email</strong>
+                <p>swastikgupta@gmail.com</p>
+            </div>
+            <div class="row">
+                <div class="btn btn-log btn-outline-success rounded-pill px-4 py-3">Update Profile</div>
+            </div>
+        </div>
+        <div class="col-lg-7 ms-4 col-12 py-5 px-4 bg-white rounded shadow h-100">
+            <div class=" row">
+                <strong class="col-4">Medicine Name</strong>
+                <strong class="col-4">Quantity</strong>
+                <strong class="col-4">Price(in Rupees)</strong>
+            </div>
+            <hr class="text-dark m-0 p-0"/>
+            <div class="row">
+                <p class="col-4">Paracetamol</p>
+                <p class="col-4">10</p>
+                <p class="col-4">100</p>
+            </div>
+            <hr class="text-dark m-0 p-0" />
+            <div class="row">
+                <p class="col-4">Paracetamol</p>
+                <p class="col-4">10</p>
+                <p class="col-4">100</p>
+            </div>
+            <hr class="text-dark m-0 p-0" />
+            <div class="row">
+                <p class="col-4">Paracetamol</p>
+                <p class="col-4">10</p>
+                <p class="col-4">100</p>
+            </div>
+    </div>
+
+
+
+
 </div>
+
 <script>
 
 

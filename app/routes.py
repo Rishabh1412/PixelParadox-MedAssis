@@ -203,7 +203,7 @@ def api_test():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required_user
 def dashboard():
-    flash('This is a flash message with bounce effect!', category='success')
+    
     doctors=Doctor.query.all()
     feedback_form = FeedbackForm()
     dietchart = DietChart()
@@ -613,9 +613,9 @@ def load_messages():
     return jsonify({'messages': messages_data})
 
 
-@app.route('/medicine-platform', methods=['GET', 'POST'])
-def medicine_platform():
-    useraskform = UserAskForm()
+@app.route('/med-shop', methods=['GET', 'POST'])
+def med_shop():
+    
     feedback_form = FeedbackForm()
     if feedback_form.validate_on_submit():
         reaction = request.form.get('reaction')  # Capture emoji reaction
@@ -631,75 +631,19 @@ def medicine_platform():
         send_email("anujkaushal1068@gmail.com", email_subject, email_body)
         print("Email sent successfully!")
 
-        return redirect(url_for('medicine_platform'))
+        return redirect(url_for('med_shop'))
 
-    if useraskform.validate_on_submit():
-        
-        new_message = FormMessage(
-            medicine_name=useraskform.medicine_name.data,
-            user_name=useraskform.user_name.data,
-            user_pincode=useraskform.user_pincode.data,
-            user_city=useraskform.user_city.data,
-            msg_type='ask'
-        )
-        db.session.add(new_message)
-        db.session.commit()
-        return redirect(url_for('medicine_platform'))
-    messages = FormMessage.query.order_by(FormMessage.timestamp.asc()).all()
 
     return render_template(
         'medicine-platform.html',
         user_data=get_current_user(),
-        feedback_form=feedback_form,
-        useraskform=useraskform,
-        messages=messages
+        feedback_form=feedback_form
     )
     
-@app.route('/retail', methods=['GET', 'POST'])
-def retail():
-    retailerreplyform = RetailerReplyForm()
-    feedback_form = FeedbackForm()
-    if feedback_form.validate_on_submit():
-        reaction = request.form.get('reaction')  # Capture emoji reaction
-        feedback_text = feedback_form.feedback.data  # Capture feedback text
 
-        # Construct the email content
-        email_subject = f"Feedback from {get_current_user().username}"
-        email_body = f"""
-        From: {get_current_user().email_address}<br/>
-        Reaction: {reaction}<br/>
-        Feedback: {feedback_text}
-        """
-        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
-        print("Email sent successfully!")
+    
 
-        return redirect(url_for('retail'))
-    if retailerreplyform.validate_on_submit():
-        
-        new_message = FormMessage(
-            medicine_name=retailerreplyform.medicine_name.data,
-            user_name=retailerreplyform.user_name.data,
-            user_pincode=retailerreplyform.user_pincode.data,
-            user_city=retailerreplyform.user_city.data,
-            shop_name=retailerreplyform.shop_name.data,
-            location=retailerreplyform.address.data,
-            price=retailerreplyform.price.data,
-            msg_type ='reply'
-        )
-        
-        db.session.add(new_message)
-        db.session.commit()
-        return redirect(url_for('retail'))
-
-    messages = FormMessage.query.order_by(FormMessage.timestamp.asc()).all()
-
-    return render_template(
-        'retail.html',
-        user_data=get_current_user(),
-        feedback_form=feedback_form,
-        retailerreplyform=retailerreplyform,
-        messages=messages
-    )
+ 
 
 
 
@@ -751,9 +695,10 @@ def appointment(doctor_id):
                 # Process the form data (e.g., save to the database)
                 print("Form Submitted:", timeslot, date, doctorId)
                 print(doctor_mail)
-                send_email(doctor_mail, "Appointment Fixed", "Ganduu")
+                send_email(doctor_mail, "Appointment Fixed", "")
 
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('create_room', doctor_email=doctor_mail))
+
             except ValueError as e:
                 print(e)
 
@@ -958,13 +903,16 @@ def doctor_otp():
     return render_template('doctor_otp.html',otpform=otpform)
 
 @app.route('/meeting')
-@login_required_doctor
 def meeting():
     room_id = request.args.get("roomID")
     if not room_id:
         room_id = generate_room_code()
     print(f"Room ID: {room_id}")
-    return render_template("meeting.html", user_data=get_current_doctor().username)
+    if get_current_doctor():
+        user_data=get_current_doctor().username
+    else:
+        user_data=get_current_user().username
+    return render_template("meeting.html", user_data=user_data)
 
 
 @app.route('/join', methods=['GET', 'POST'])
@@ -981,10 +929,12 @@ def join():
 
 @app.route('/create_room', methods=['GET'])
 def create_room():
+    doctor_email = request.args.get('doctor_email') 
     room_id = generate_room_code()
     valid_room_codes[room_id] = True
+    send_email(doctor_email,"Join code for the appointment.",f"The joining code is {room_id}.")
     print(f"Generated Room Code: {room_id}")
-    return redirect('/join')
+    return redirect('/dashboard')
 
 
 @app.route('/diabetes-form', methods=['GET','POST'])

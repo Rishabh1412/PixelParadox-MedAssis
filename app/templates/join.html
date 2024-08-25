@@ -63,6 +63,7 @@
 
 <body>
     <div class="container">
+        {% include "flash.html" %}
         <h1 class="text-center mt-5">Join Meeting</h1>
         <form method="POST" action="{{ url_for('join') }}"
             class="mt-4 d-flex flex-column align-items-center justify-content-center">
