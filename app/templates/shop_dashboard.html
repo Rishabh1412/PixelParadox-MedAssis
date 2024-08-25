@@ -1,4 +1,4 @@
-{% extends "shop-base.html" %} {% block title %}Medassis | Med-find-S{% endblock %} {% block
+{% extends "shop-base.html" %} {% block title %}Medassis | Med-Pharmacy{% endblock %} {% block
 content %}
 {% include "feedback.html" %}
 {% include "flash.html" %}
@@ -37,15 +37,14 @@ content %}
                 <strong>Email</strong>
                 <p>{{ user_data.email_address }}</p>
             </div>
-            <div>
-                <strong>Email</strong>
-                <p>{{ user_data.email_address }}</p>
-            </div>
-            <div class="row">
 
+            <div class="row">
                 <div class="btn btn-log btn-outline-success rounded-pill px-4 py-3" data-bs-toggle="modal"
-                    data-bs-target="#medicine-shop-modal">Update Profile</div>
+                    data-bs-target="#medicine-shop-modal">Add Stocks</div>
+                <div class="btn btn-log btn-outline-danger rounded-pill mt-2 px-4 py-3" data-bs-toggle="modal"
+                    data-bs-target="#medicine-deductshop-modal">Deduct Stocks</div>
             </div>
+
         </div>
         <div class="col-lg-7 ms-4 col-12 py-5 px-4 bg-white rounded shadow h-100">
             <div class=" row">
@@ -69,6 +68,7 @@ content %}
 
 
         {% include ('medicineupdate.html') %}
+        {% include 'medicinededuct.html' %}
 
     </div>
 

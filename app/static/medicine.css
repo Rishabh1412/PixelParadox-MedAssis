@@ -48,6 +48,8 @@
 
 .med-chat-bubble.bot {
     align-self: flex-start;
+    color: black;
+    background-color: white;
 }
 
 .med-roundpill {

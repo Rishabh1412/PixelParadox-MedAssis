@@ -30,13 +30,13 @@
 }
 
 .new-chat-bubble {
-    background:transparent;
+    background:white;
     border: #56f1f9 1px solid;
     padding: 10px 20px;
     border-radius: 20px;
     margin-bottom: 10px;
     max-width: 80%;
-    color: #fff;
+    color: black;
     font-size: 14px;
 }
 

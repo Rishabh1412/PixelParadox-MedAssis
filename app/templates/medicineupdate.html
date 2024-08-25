@@ -1,14 +1,14 @@
 <div class="modal fade" id="medicine-shop-modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content bg-white p-0 m-0 " style="overflow-y: auto;">
+        <div class="modal-content bg-white p-0 m-0" style="overflow-y: auto;">
             <div class="modal-header">
-                <h1 class="modal-title text-dark fs-5 px-2 px-md-3" id="exampleModalLabel">Reply to Medicine Request
-                </h1>
+                <h1 class="modal-title text-dark fs-5 px-2 px-md-3" id="exampleModalLabel">Add / Update Stocks</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body text-dark ">
-                <form method="POST" class="row px-4">
+            <div class="modal-body text-dark">
+                <form method="POST" action="{{ url_for('shop_dashboard') }}" class="row px-4">
                     {{ medicineform.hidden_tag() }}
+                    <input type="hidden" name="add_stock" value="true">
                     <div class="col-12 d-flex mb-3 flex-column">
                         {{ medicineform.medicine_name.label(class='fw-semibold') }}
                         {{ medicineform.medicine_name(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}

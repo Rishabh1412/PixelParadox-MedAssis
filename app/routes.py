@@ -1,6 +1,6 @@
 from app import app,db, session
 from flask import render_template, redirect, url_for, flash, request, jsonify
-from app.forms import DiabetesForm,OtpForm,SignInForm,SignUpForm,LiverForm,KidneyForm,XrayForm,ReminderForm,UserProfileForm,FeedbackForm,ChatbotForm,DietChart,DoctorProfileForm,UserAskForm,RetailerReplyForm,AppointmentForm, MedicineForm, RegisterForm
+from app.forms import DiabetesForm,OtpForm,SignInForm,SignUpForm,LiverForm,KidneyForm,XrayForm,ReminderForm,UserProfileForm,FeedbackForm,ChatbotForm,DietChart,DoctorProfileForm,UserAskForm,RetailerReplyForm,AppointmentForm, MedicineForm, RegisterForm,MedicineDeductForm
 from app.models import User, Checkup, Kidney, Liver,Message, Reminder, Doctor,FormMessage, Appointment, Shop, Medicine
 from app.mails import send_email
 import numpy as np
@@ -499,19 +499,18 @@ def shop_otp():
         flash(f"Wrong OTP entered !!! Please enter a valid OTP !!!", category='error')
     return render_template('shop_otp.html',otpform=otpform)
 
-@app.route('/shop-dashboard',methods=['GET','POST'])
+@app.route('/shop-dashboard', methods=['GET', 'POST'])
 @login_required_shop
 def shop_dashboard():
-    medicineform=MedicineForm()
+    medicineform = MedicineForm()
+    medicinededuct = MedicineDeductForm()
     feedback_form = FeedbackForm()
-    shop_data=get_current_shop()
-    
+    shop_data = get_current_shop()
 
+    # Handle feedback form submission
     if feedback_form.validate_on_submit():
-        reaction = request.form.get('reaction')  # Capture emoji reaction
-        feedback_text = feedback_form.feedback.data  # Capture feedback text
-
-        # Construct the email content
+        reaction = request.form.get('reaction')
+        feedback_text = feedback_form.feedback.data
         email_subject = f"Feedback from {get_current_user().username}"
         email_body = f"""
         From: {get_current_user().email_address}<br/>
@@ -520,49 +519,50 @@ def shop_dashboard():
         """
         send_email("anujkaushal1068@gmail.com", email_subject, email_body)
         print("Email sent successfully!")
-
-        
         return redirect(url_for('shop_dashboard'))
-    if medicineform.validate_on_submit():
-        
-        med_data=Medicine.query.filter_by(medicine_name=medicineform.medicine_name.data, shop_name=shop_data.shop_name).first()
-        if not med_data:
-            print("NO")
-            while app.app_context():
-                new_data=Medicine(owner_name=shop_data.username,
-                                email_address=shop_data.email_address,
-                                phno=shop_data.phno,
-                                pincode=shop_data.pincode,
-                                shop_name=shop_data.shop_name,
-                                qty=medicineform.qty.data,
-                                medicine_name=medicineform.medicine_name.data,
-                                medicine_category=medicineform.medicine_category.data,
-                                price=medicineform.price.data)
-                db.session.add(new_data)
-                db.session.commit()
-                return redirect(url_for('shop_dashboard'))
 
-            
+    # Handle addition of medicine
+    if 'add_stock' in request.form and medicineform.validate_on_submit():
+        med_data = Medicine.query.filter_by(medicine_name=medicineform.medicine_name.data, shop_name=shop_data.shop_name).first()
+        if not med_data:
+            new_data = Medicine(
+                owner_name=shop_data.username,
+                email_address=shop_data.email_address,
+                phno=shop_data.phno,
+                pincode=shop_data.pincode,
+                shop_name=shop_data.shop_name,
+                qty=medicineform.qty.data,
+                medicine_name=medicineform.medicine_name.data,
+                medicine_category=medicineform.medicine_category.data,
+                price=medicineform.price.data
+            )
+            db.session.add(new_data)
         else:
             if medicineform.qty.data:
-                med_data.qty=med_data.qty+medicineform.qty.data
+                med_data.qty += medicineform.qty.data
             if medicineform.price.data:
-                med_data.price=medicineform.price.data
+                med_data.price = medicineform.price.data
+        db.session.commit()
+        flash("Stock Added Successfully", "success")
+        return redirect(url_for('shop_dashboard'))
 
+    # Handle deduction of medicine
+    if 'deduct_stock' in request.form and medicinededuct.validate_on_submit():
+        med_deduct = Medicine.query.filter_by(medicine_name=medicinededuct.medicine_name.data, shop_name=shop_data.shop_name).first()
+        if not med_deduct:
+            flash("Medicine not found","danger")
+        else:
+            if medicinededuct.qty.data:
+                if med_deduct.qty >= medicinededuct.qty.data:
+                    med_deduct.qty -= medicinededuct.qty.data
+                    flash("Stock Deducted Successfully", "success")
+                else:
+                    flash("Insufficient stock for this medicine", "danger")
             db.session.commit()
         return redirect(url_for('shop_dashboard'))
-    current_shop = get_current_shop()
-    if not current_shop:
-        return redirect(url_for("shoplogin"))
+
     results = Medicine.query.filter_by(shop_name=shop_data.shop_name).all()
-    print(results)
-    
-
-    
-
-
-    return render_template('shop_dashboard.html', user_data=current_shop, feedback_form=feedback_form, medicineform=medicineform, results=results, shop_data=shop_data)
-
+    return render_template('shop_dashboard.html', user_data=shop_data, feedback_form=feedback_form, medicineform=medicineform, medicinededuct=medicinededuct, results=results, shop_data=shop_data)
 
 
 
@@ -663,6 +663,7 @@ def load_messages():
 
 
 @app.route('/med-shop', methods=['GET', 'POST'])
+@login_required_user
 def med_shop():
     
     feedback_form = FeedbackForm()
@@ -691,9 +692,14 @@ def med_shop():
         medicines=medicines
     )
     
-@app.route('/medicine-details')
-def medicine_details():
-    feedback_form=FeedbackForm()
+@app.route('/medicine-details/<int:medicine_id>')
+@login_required_user
+def medicine_details(medicine_id):
+    feedback_form = FeedbackForm()
+
+    # Retrieve the medicine details from the database using the medicine_id
+    medicine = Medicine.query.get_or_404(medicine_id)
+
     if feedback_form.validate_on_submit():
         reaction = request.form.get('reaction')  # Capture emoji reaction
         feedback_text = feedback_form.feedback.data  # Capture feedback text
@@ -708,8 +714,15 @@ def medicine_details():
         send_email("anujkaushal1068@gmail.com", email_subject, email_body)
         print("Email sent successfully!")
 
-        return redirect(url_for('medicine_details'))
-    return render_template('medicine-details.html',user_data=get_current_user(),feedback_form=feedback_form)
+        return redirect(url_for('medicine_details', medicine_id=medicine_id))
+
+    return render_template(
+        'medicine-details.html',
+        user_data=get_current_user(),
+        feedback_form=feedback_form,
+        medicine=medicine
+    )
+
     
 
  
@@ -791,7 +804,7 @@ def appointment(doctor_id):
         send_email("anujkaushal1068@gmail.com", email_subject, email_body)
         print("Email sent successfully!")
 
-        return redirect(url_for('appointment', doctor_id=doctor.id))
+        return redirect(url_for('create_room', doctor_email=doctor_mail,timeslot=timeslot, date=date))
 
     return render_template(
         'appointment.html',
@@ -998,10 +1011,47 @@ def join():
 
 @app.route('/create_room', methods=['GET'])
 def create_room():
-    doctor_email = request.args.get('doctor_email') 
+    doctor_email = request.args.get('doctor_email')
+    date = request.args.get('date')
+    timeslot = request.args.get('timeslot')
+
     room_id = generate_room_code()
     valid_room_codes[room_id] = True
-    send_email(doctor_email,"Join code for the appointment.",f"The joining code is {room_id}.")
+
+    # Email content for doctor
+    doctor_subject = "Appointment Scheduled: Join Code Enclosed"
+    doctor_body = f"""
+    <html>
+    <body>
+    <p>Dear Doctor,</p>
+    <p>An appointment has been scheduled with you on <strong>{date}</strong> at <strong>{timeslot}</strong>.</p>
+    <p>Please use the following code to join the session:</p>
+    <p><strong>Joining Code: {room_id}</strong></p>
+    <p>We kindly ask that you be on time for the session. If you have any questions, feel free to reach out to us.</p>
+    <p>Best regards,<br>MEDASSIS Team</p>
+    </body>
+    </html>
+    """
+
+    # Email content for patient
+    patient_subject = "Your Appointment is Confirmed: Join Code Enclosed"
+    patient_body = f"""
+    <html>
+    <body>
+    <p>Dear {get_current_user().username},</p>
+    <p>Your appointment has been successfully scheduled on <strong>{date}</strong> at <strong>{timeslot}</strong>.</p>
+    <p>Please use the following code to join the session:</p>
+    <p><strong>Joining Code: {room_id}</strong></p>
+    <p>We suggest joining a few minutes early to ensure everything works smoothly. If you need assistance, feel free to contact us.</p>
+    <p>Best regards,<br>MEDASSIS Team</p>
+    </body>
+    </html>
+    """
+
+    # Send emails
+    send_email(doctor_email, doctor_subject, doctor_body)
+    send_email(get_current_user().email_address, patient_subject, patient_body)
+
     print(f"Generated Room Code: {room_id}")
     return redirect('/dashboard')
 

@@ -7,10 +7,7 @@
 {% include "flash.html" %}
 <div style="height: 100vh; overflow-y: auto;">
     <div class="px-4 pt-3 pt-md-4 position-relative d-flex justify-content-between align-items-center mobhead">
-        <!-- <div class="d-flex justify-content-between postion-fixed pt-5 pt-md-0"> -->
-
-        <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">MedShop</h4>
-
+        <h4 class="ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">MedShop</h4>
         <a href="{{ url_for('shop_logout') }}"><button class="logout me-5 me-md-0 shadow postion-fixed">
                 Log Out <i class="fa-solid fa-right-from-bracket"></i>
             </button>
@@ -18,11 +15,31 @@
         <i class="fa-solid fa-bars d-md-none me-2 d-flex position-fixed menu-button shadow"
             onclick="togglesidebar()"></i>
     </div>
-    <div class="my-3 h-75 d-flex p-3 bg-white shadow rounded mx-2 mx-mg-4" >
-        <div class=" d-flex gap-3">
+    <div class="my-3 h-75 p-3 bg-white shadow rounded mx-2 mx-mg-4">
+        <div class="d-flex gap-3 w-100">
             <img src="../static/assests/Group 4.png" width="100px" height="100px" alt="">
-            <h5></h5>
+            <div class="d-flex flex-column w-100">
+                <div class="d-flex justify-content-between w-100">
+                    <h4 class="pt-3">{{ medicine.medicine_name }}</h4>
+                    <a href='{{ url_for("med_shop") }}' class="justify-content-center d-flex align-items-center">
+                        <button class="btn btn-dark p-3 rounded-circle"><i class="fa-solid fa-arrow-left"></i></button>
+                    </a>
+                </div>
+                <h5 class="fw-bold">Rs. {{ medicine.price }}</h5>
+            </div>
         </div>
+        <div class="justify-content-start gap-5 d-flex mt-3 bg-body-tertiary rounded p-3">
+            <div>
+                <h6 class="text-secondary py-2 m-0">Available at: {{ medicine.shop_name }}</h6>
+                <h6 class="text-secondary py-2 m-0">Pincode: {{ medicine.pincode }}</h6>
+            </div>
+            <select class="bg-body-secondary mt-2 rounded-pill px-4 py-3 border-0" name="medicine-quantity">
+                {% for i in range(1, medicine.qty + 1) %}
+                <option>{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button class="btn btn-lg btn-success px-4 mt-3 rounded-pill">Buy Now</button>
     </div>
 </div>
 {% endblock %}

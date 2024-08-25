@@ -71,6 +71,7 @@
 .chat-bubble.bot {
     align-self: flex-start;
     background: #444;
+    color: white;
 }
 
 .roundpill {

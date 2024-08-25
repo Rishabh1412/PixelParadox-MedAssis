@@ -233,6 +233,17 @@ class MedicineForm(FlaskForm):
     submit=SubmitField('Enter Items')
 
 
+class MedicineDeductForm(FlaskForm):
+    medicine_name=StringField('Medicine Name', 
+                            validators=[Optional(), Length(max=20)], 
+                            render_kw={"placeholder": "Enter Medicine Name :"})
+    qty=IntegerField('Quantity : ',
+                         validators=[Optional()],
+                         render_kw={"placeholder": "Quantity :"})
+
+    submit=SubmitField('Enter Items')
+
+
 class RegisterForm(FlaskForm):
 
     def validate_username(self, username_to_check):
