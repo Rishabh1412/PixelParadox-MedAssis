@@ -1,7 +1,7 @@
 from app import app,db, session
 from flask import render_template, redirect, url_for, flash, request, jsonify
-from app.forms import DiabetesForm,OtpForm,SignInForm,SignUpForm,LiverForm,KidneyForm,XrayForm,ReminderForm,UserProfileForm,FeedbackForm,ChatbotForm,DietChart,DoctorProfileForm,UserAskForm,RetailerReplyForm,AppointmentForm
-from app.models import User, Checkup, Kidney, Liver,Message, Reminder, Doctor,FormMessage, Appointment, Shop
+from app.forms import DiabetesForm,OtpForm,SignInForm,SignUpForm,LiverForm,KidneyForm,XrayForm,ReminderForm,UserProfileForm,FeedbackForm,ChatbotForm,DietChart,DoctorProfileForm,UserAskForm,RetailerReplyForm,AppointmentForm, MedicineForm, RegisterForm
+from app.models import User, Checkup, Kidney, Liver,Message, Reminder, Doctor,FormMessage, Appointment, Shop, Medicine
 from app.mails import send_email
 import numpy as np
 import pickle
@@ -439,12 +439,15 @@ def shoplogin():
 
 @app.route('/shop-sign-up', methods=['GET','POST'])
 def shop_signup():
-    form=SignUpForm()
+    form=RegisterForm()
     if form.validate_on_submit():
         global user_details
         user_details.append(form.username.data)
         user_details.append(form.email_address.data)
         user_details.append(form.password.data)
+        user_details.append(form.shop_name.data)
+        user_details.append(form.pincode.data)
+        user_details.append(form.phno.data)
         global otp
         otp=random.randint(100000, 999999)
         get_otp.append(otp)
@@ -475,13 +478,19 @@ def shop_otp():
             with app.app_context():
                 user_data=Shop(username=user_details[0],
                                 email_address=user_details[1],
+                                shop_name=user_details[3],
+                                pincode=user_details[4],
+                                phno=user_details[5],
                                 password=user_details[2])
                             
                 db.session.add(user_data)
                 db.session.commit()
                 # login_user(user_data)
                 session['shop_id']=user_data.id
-            
+                        
+            user_details.pop()
+            user_details.pop()
+            user_details.pop()
             user_details.pop()
             user_details.pop()
             user_details.pop()
@@ -493,8 +502,11 @@ def shop_otp():
 @app.route('/shop-dashboard',methods=['GET','POST'])
 @login_required_shop
 def shop_dashboard():
+    medicineform=MedicineForm()
     feedback_form = FeedbackForm()
-    retailerreplyform=RetailerReplyForm()
+    shop_data=get_current_shop()
+    
+
     if feedback_form.validate_on_submit():
         reaction = request.form.get('reaction')  # Capture emoji reaction
         feedback_text = feedback_form.feedback.data  # Capture feedback text
@@ -511,11 +523,48 @@ def shop_dashboard():
 
         
         return redirect(url_for('shop_dashboard'))
+    if medicineform.validate_on_submit():
+        
+        med_data=Medicine.query.filter_by(medicine_name=medicineform.medicine_name.data, shop_name=shop_data.shop_name).first()
+        if not med_data:
+            print("NO")
+            while app.app_context():
+                new_data=Medicine(owner_name=shop_data.username,
+                                email_address=shop_data.email_address,
+                                phno=shop_data.phno,
+                                pincode=shop_data.pincode,
+                                shop_name=shop_data.shop_name,
+                                qty=medicineform.qty.data,
+                                medicine_name=medicineform.medicine_name.data,
+                                medicine_category=medicineform.medicine_category.data,
+                                price=medicineform.price.data)
+                db.session.add(new_data)
+                db.session.commit()
+                return redirect(url_for('shop_dashboard'))
+
+            
+        else:
+            if medicineform.qty.data:
+                med_data.qty=med_data.qty+medicineform.qty.data
+            if medicineform.price.data:
+                med_data.price=medicineform.price.data
+
+            db.session.commit()
+        return redirect(url_for('shop_dashboard'))
     current_shop = get_current_shop()
     if not current_shop:
         return redirect(url_for("shoplogin"))
+    results = Medicine.query.filter_by(shop_name=shop_data.shop_name).all()
+    print(results)
+    
 
-    return render_template('shop_dashboard.html', user_data=current_shop, feedback_form=feedback_form,retailerreplyform=retailerreplyform)
+    
+
+
+    return render_template('shop_dashboard.html', user_data=current_shop, feedback_form=feedback_form, medicineform=medicineform, results=results, shop_data=shop_data)
+
+
+
 
 @app.route('/shop-logout')
 @login_required_shop
@@ -640,7 +689,25 @@ def med_shop():
         feedback_form=feedback_form
     )
     
+@app.route('/medicine-details')
+def medicine_details():
+    feedback_form=FeedbackForm()
+    if feedback_form.validate_on_submit():
+        reaction = request.form.get('reaction')  # Capture emoji reaction
+        feedback_text = feedback_form.feedback.data  # Capture feedback text
 
+        # Construct the email content
+        email_subject = f"Feedback from {get_current_user().username}"
+        email_body = f"""
+        From: {get_current_user().email_address}<br/>
+        Reaction: {reaction}<br/>
+        Feedback: {feedback_text}
+        """
+        send_email("anujkaushal1068@gmail.com", email_subject, email_body)
+        print("Email sent successfully!")
+
+        return redirect(url_for('medicine_details'))
+    return render_template('medicine-details.html',user_data=get_current_user(),feedback_form=feedback_form)
     
 
  

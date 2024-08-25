@@ -1,0 +1,35 @@
+<div class="modal fade" id="medicine-shop-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-white p-0 m-0 " style="overflow-y: auto;">
+            <div class="modal-header">
+                <h1 class="modal-title text-dark fs-5 px-2 px-md-3" id="exampleModalLabel">Reply to Medicine Request
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-dark ">
+                <form method="POST" class="row px-4">
+                    {{ medicineform.hidden_tag() }}
+                    <div class="col-12 d-flex mb-3 flex-column">
+                        {{ medicineform.medicine_name.label(class='fw-semibold') }}
+                        {{ medicineform.medicine_name(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ medicineform.qty.label(class='fw-semibold') }}
+                        {{ medicineform.qty(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ medicineform.medicine_category.label(class='fw-semibold') }}
+                        {{ medicineform.medicine_category(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-6 d-flex mb-3 flex-column">
+                        {{ medicineform.price.label(class='fw-semibold') }}
+                        {{ medicineform.price(class='rounded py-2 px-2 border-0 bg-body-tertiary') }}
+                    </div>
+                    <div class="col-12 my-3">
+                        {{ medicineform.submit(class='rounded w-100 btn btn-dark px-4 py-2 rounded') }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

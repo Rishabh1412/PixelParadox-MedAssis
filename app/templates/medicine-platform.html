@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Medassis | Med-Finder{% endblock %}
+{% block title %}Medassis | Med-Shop{% endblock %}
 
 {% block content %}
 {% include "feedback.html" %}
@@ -11,7 +11,7 @@
 
         <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">MedShop</h4>
 
-        <a href="{{ url_for('shop_logout') }}"><button class="logout me-5 me-md-0 shadow postion-fixed">
+        <a href="{{ url_for('logout') }}"><button class="logout me-5 me-md-0 shadow postion-fixed">
                 Log Out <i class="fa-solid fa-right-from-bracket"></i>
             </button>
         </a>
@@ -19,6 +19,7 @@
             onclick="togglesidebar()"></i>
     </div>
     <div class="p-2 p-md-4 pt-3 pt-md-5 pt-md-3 rounded bg-white row mx-2 mx-md-4 mt-2 shadow d-flex align-items-center justify-content-between">
+        <input class="py-3 px-4 rounded-pill bg-body-secondary w-100 mx-1 border-0" placeholder="Search for medicine..."/>
         <div class="col-md-3 col-6 p-3 d-flex justify-content-center ">
             <div class="rounded border-secondary border m-0 p-0">
                 <img src="../static/assests/Group 4.png" class="rounded" style="object-fit: contain; object-fit: cover; width:108.5% " alt="">

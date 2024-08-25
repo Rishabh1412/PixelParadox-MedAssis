@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField,RadioField,IntegerField,SelectField,DecimalField,FileField,DateTimeField,TextAreaField,FloatField,DateField,HiddenField
 from wtforms.validators import Length, Email, Optional, DataRequired, ValidationError
 from app import app
-from app.models import User
+from app.models import User, Shop
 
 
 class DiabetesForm(FlaskForm):
@@ -215,3 +215,44 @@ class AppointmentForm(FlaskForm):
     doctorId = HiddenField('Doctor ID', validators=[DataRequired()])
 
     submit = SubmitField('Fix Appointment')
+
+
+class MedicineForm(FlaskForm):
+    medicine_name=StringField('Medicine Name', 
+                            validators=[Optional(), Length(max=20)], 
+                            render_kw={"placeholder": "Enter Medicine Name :"})
+    qty=IntegerField('Quantity : ',
+                         validators=[Optional()],
+                         render_kw={"placeholder": "Quantity :"})
+    medicine_category=StringField('Medicine Category : ', 
+                            validators=[Optional(), Length(max=20)], 
+                            render_kw={"placeholder": "Enter Medicine Category :"})
+    price=FloatField('Price : ',
+                         validators=[Optional()],
+                         render_kw={"placeholder": "Enter Price :"})
+    submit=SubmitField('Enter Items')
+
+
+class RegisterForm(FlaskForm):
+
+    def validate_username(self, username_to_check):
+        with app.app_context():
+            shop=Shop.query.filter_by(username=username_to_check.data).first()
+
+        if shop:
+            raise ValidationError('Username already exists! Please try a different username')
+        
+    def validate_email_address(self, email_address_to_check):
+        with app.app_context():
+            email=User.query.filter_by(email_address=email_address_to_check.data).first()
+
+        if email:
+            raise ValidationError('Email adress already exists! Please try a different email address')
+        
+    username = StringField(label='User Name :', validators=[Length(min=2, max=20), DataRequired()])
+    email_address = StringField(label='Email Address : ', validators=[Email(), DataRequired()])
+    shop_name=StringField(label='Shop Name : ', validators=[DataRequired()])
+    pincode=IntegerField(label='Pincode : ', validators=[DataRequired()])
+    phno=IntegerField(label='Phone No. : ', validators=[DataRequired()])
+    password = PasswordField(label='Password : ', validators=[Length(min=6), DataRequired()])
+    submit = SubmitField(label='Create Account')

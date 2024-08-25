@@ -58,6 +58,9 @@ class Shop(db.Model, UserMixin):
     id=db.Column(db.Integer(), primary_key=True)
     username=db.Column(db.String(length=30), nullable=False, unique=True)
     email_address=db.Column(db.String(length=50), nullable=False, unique=True)
+    shop_name=db.Column(db.String(length=50), nullable=False)
+    pincode=db.Column(db.Integer(), nullable=False)
+    phno=db.Column(db.Integer(), nullable=False)
     password_hash=db.Column(db.String(length=60), nullable=False)
 
     @property
@@ -70,6 +73,19 @@ class Shop(db.Model, UserMixin):
 
     def check_password_correction(self, attempted_password):
         return bcrypt.check_password_hash(self.password_hash, attempted_password)
+    
+class Medicine(db.Model):
+    id=db.Column(db.Integer, primary_key=True)
+    owner_name=db.Column(db.String(20), nullable=False)
+    email_address=db.Column(db.String(length=50), nullable=False)
+    phno=db.Column(db.Integer, nullable=False)
+    pincode=db.Column(db.Integer, nullable=False)
+    shop_name=db.Column(db.String(20), nullable=False)
+    medicine_name=db.Column(db.String(20), nullable=False)
+    qty=db.Column(db.Integer, nullable=False)
+    medicine_category=db.Column(db.String(20), nullable=False)
+    price=db.Column(db.Float, nullable=False)
+    
 
 class Appointment(db.Model):
     id=db.Column(db.Integer(), primary_key=True)

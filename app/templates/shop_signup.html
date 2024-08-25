@@ -184,7 +184,6 @@
 </head>
 
 <body class="bg-light row m-0">
-    {% include "flash.html" %}
     <div class="py-4 col-11 col-md-5 mx-auto bg-white form-base shadow">
         <h4 class="fw-normal px-4">Sign up</h4>
 
@@ -215,6 +214,31 @@
                 </svg>
 
                 {{ signup.email_address(class='input') }}
+            </div>
+
+            <div class="flex-column">
+                {{ signup.shop_name.label(class='') }}
+            </div>
+            <div class="inputForm">
+                <i class="fa-regular fa-user px-1 me-2" style="height: 15px; width:10px"></i>
+
+                {{ signup.shop_name(class='input') }}
+            </div>
+            <div class="flex-column">
+                {{ signup.pincode.label(class='') }}
+            </div>
+            <div class="inputForm">
+                <i class="fa-regular fa-user px-1 me-2" style="height: 15px; width:10px"></i>
+
+                {{ signup.pincode(class='input') }}
+            </div>
+            <div class="flex-column">
+                {{ signup.phno.label(class='') }}
+            </div>
+            <div class="inputForm">
+                <i class="fa-regular fa-user px-1 me-2" style="height: 15px; width:10px"></i>
+
+                {{ signup.phno(class='input') }}
             </div>
 
 
@@ -255,7 +279,8 @@
 
             </div>
             {{ signup.submit(class="button-submit") }}
-            <p class="p">Already have an account? <a href="{{ url_for('shoplogin') }}"><span class="span">Sign In</span></a>
+            <p class="p">Already have an account? <a href="{{ url_for('shoplogin') }}"><span class="span">Sign
+                        In</span></a>
             </p>
         </form>
 

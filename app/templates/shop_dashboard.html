@@ -6,7 +6,7 @@ content %}
     <div class="px-4 pt-3 pt-md-4 position-relative d-flex justify-content-between align-items-center mobhead">
         <!-- <div class="d-flex justify-content-between postion-fixed pt-5 pt-md-0"> -->
 
-        <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">Swastik Medical</h4>
+        <h4 class=" ps-md-0 fs-3 fs-md-3 pt-1 fw-semibold">{{ shop_data.shop_name }}</h4>
 
         <a href="{{ url_for('shop_logout') }}"><button class="logout me-5 me-md-0 shadow postion-fixed">
                 Log Out <i class="fa-solid fa-right-from-bracket"></i>
@@ -20,79 +20,75 @@ content %}
     <div class="row gap-3 gap-lg-0 m-3">
         <div class="col-lg-4 h-100 col-12 py-5 px-5 bg-white rounded shadow d-flex flex-column">
             <div class="d-flex gap-3 ">
-                
-                <h6 class="fw-semibold">Swastik Gupta</h6>
+
+                <h6 class="fw-semibold">{{ user_data.username }}</h6>
             </div>
             <div class="row ">
                 <div class="col-6">
                     <strong>Pincode</strong>
-                    <p>741235</p>
+                    <p>{{ shop_data.pincode }}</p>
                 </div>
                 <div class="col-6">
-                    <strong>City</strong>
-                    <p>Kalyani</p>
+                    <strong>Contact No.</strong>
+                    <p>{{ shop_data.phno }}</p>
                 </div>
             </div>
             <div>
                 <strong>Email</strong>
-                <p>swastikgupta@gmail.com</p>
+                <p>{{ user_data.email_address }}</p>
             </div>
             <div>
                 <strong>Email</strong>
-                <p>swastikgupta@gmail.com</p>
+                <p>{{ user_data.email_address }}</p>
             </div>
             <div class="row">
-                <div class="btn btn-log btn-outline-success rounded-pill px-4 py-3">Update Profile</div>
+
+                <div class="btn btn-log btn-outline-success rounded-pill px-4 py-3" data-bs-toggle="modal"
+                    data-bs-target="#medicine-shop-modal">Update Profile</div>
             </div>
         </div>
         <div class="col-lg-7 ms-4 col-12 py-5 px-4 bg-white rounded shadow h-100">
             <div class=" row">
-                <strong class="col-4">Medicine Name</strong>
-                <strong class="col-4">Quantity</strong>
-                <strong class="col-4">Price(in Rupees)</strong>
-            </div>
-            <hr class="text-dark m-0 p-0"/>
-            <div class="row">
-                <p class="col-4">Paracetamol</p>
-                <p class="col-4">10</p>
-                <p class="col-4">100</p>
+                <strong class="col-3">Medicine Name</strong>
+                <strong class="col-3">Category</strong>
+                <strong class="col-3">Quantity</strong>
+                <strong class="col-3">Price(in Rupees)</strong>
             </div>
             <hr class="text-dark m-0 p-0" />
+            {% for data in results %}
             <div class="row">
-                <p class="col-4">Paracetamol</p>
-                <p class="col-4">10</p>
-                <p class="col-4">100</p>
+                <p class="col-3">{{ data.medicine_name }}</p>
+                <p class="col-3">{{ data.medicine_category }}</p>
+                <p class="col-3">{{ data.qty }}</p>
+                <p class="col-3">{{ data.price }}</p>
             </div>
             <hr class="text-dark m-0 p-0" />
-            <div class="row">
-                <p class="col-4">Paracetamol</p>
-                <p class="col-4">10</p>
-                <p class="col-4">100</p>
-            </div>
+            {% endfor %}
+
+        </div>
+
+
+        {% include ('medicineupdate.html') %}
+
     </div>
 
+    <script>
 
 
-
-</div>
-
-<script>
-
-
-    document.getElementById('reply-button-user').addEventListener('click', function (event) {
-        event.preventDefault();
-        const formData = new FormData(document.querySelector('form#retailerreplyform'));
-        fetch('/medicine-platform', {
-            method: 'POST',
-            body: formData
-        }).then(response => {
-            if (response.ok) {
-                // Reload the chat to show updated messages
-                location.reload();
-            }
+        document.getElementById('reply-button-user').addEventListener('click', function (event) {
+            event.preventDefault();
+            const formData = new FormData(document.querySelector('form#retailerreplyform'));
+            fetch('/medicine-platform', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    // Reload the chat to show updated messages
+                    location.reload();
+                }
+            });
         });
-    });
 
 
-</script>
-{% endblock %}
+    </script>
+    {% endblock %}
